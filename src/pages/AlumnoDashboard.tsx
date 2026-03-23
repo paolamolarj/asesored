@@ -13,6 +13,8 @@ import SearchAsesores from "../components/SearchAsesores";
 import AsesorAvailability from "../components/AsesorAvailability";
 import AlumnoSessionsList from "../components/AlumnoSessionsList";
 import { alumnoNavItems } from "../data/dashboardData";
+import AsesorProfile from "../components/AsesorProfile";
+import NotificationsPanel from "../components/NotificationsPanel";
 
 interface LoggedUser {
   id?: number;
@@ -179,6 +181,10 @@ export default function AlumnoDashboard({
       />
 
       <main className="dash-main">
+
+
+
+        
         <div className="dash-topbar">
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <button className="icon-btn hamburger" onClick={() => setMobileOpen(true)}>
@@ -192,28 +198,25 @@ export default function AlumnoDashboard({
           </div>
 
           <div className="topbar-actions">
-            <div className="icon-btn" style={{ cursor: "pointer" }}>
-              <Bell size={17} />
-              <div className="notif-dot" />
-            </div>
+  <NotificationsPanel />
 
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 9,
-                background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 700,
-                fontSize: 14,
-                cursor: "pointer",
-              }}
-            >
-              {initials}
-            </div>
-          </div>
+  <div
+    style={{
+      width: 36,
+      height: 36,
+      borderRadius: 9,
+      background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: 700,
+      fontSize: 14,
+      cursor: "pointer",
+    }}
+  >
+    {initials}
+  </div>
+</div>
         </div>
 
         <div className="dash-content">
@@ -230,6 +233,7 @@ export default function AlumnoDashboard({
             <SearchAsesores onSelectAsesor={(asesor) => setSelectedAsesor(asesor)} />
           </div>
 
+          <AsesorProfile asesor={selectedAsesor} />
           <AsesorAvailability asesor={selectedAsesor} />
 
           <div ref={citasRef} style={{ scrollMarginTop: "100px" }}>

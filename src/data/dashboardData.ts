@@ -7,6 +7,7 @@ import {
   Users,
   BookOpen,
   Clock,
+  Star,
 } from "lucide-react";
 import type { NavItem } from "../types";
 
@@ -16,10 +17,12 @@ export const alumnoNavItems: NavItem[] = [
   { id: "citas", icon: Calendar, label: "Mis asesorías" },
 ];
 
+
 export const asesorNavItems: NavItem[] = [
   { id: "inicio", icon: Home, label: "Inicio" },
   { id: "materias", icon: BookOpen, label: "Mis materias" },
   { id: "horarios", icon: Clock, label: "Mis horarios" },
   { id: "solicitudes", icon: Users, label: "Solicitudes" },
   { id: "citas", icon: Calendar, label: "Mis asesorías" },
+  { id: "calificaciones", icon: Star, label: "Calificaciones" },
 ];

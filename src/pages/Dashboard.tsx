@@ -31,6 +31,19 @@ export default function Dashboard({ goLogout }: DashboardProps) {
       goLogout();
     }
   }, [goLogout]);
+  useEffect(() => {
+  async function generarRecordatorios() {
+    try {
+      await fetch("http://localhost/asesored-api/generar_recordatorios.php", {
+        method: "POST",
+      });
+    } catch (error) {
+      console.error("No se pudieron generar recordatorios");
+    }
+  }
+
+  generarRecordatorios();
+}, []);
 
   if (!user) return null;
 

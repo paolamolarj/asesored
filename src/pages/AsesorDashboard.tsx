@@ -14,6 +14,8 @@ import RegisterAvailabilityForm from "../components/RegisterAvailabilityForm";
 import AsesorOwnAvailability from "../components/AsesorOwnAvailability";
 import AsesorSessionsList from "../components/AsesorSessionsList";
 import { asesorNavItems } from "../data/dashboardData";
+import AsesorRatingsList from "../components/AsesorRatingsList";
+import NotificationsPanel from "../components/NotificationsPanel";
 
 interface LoggedUser {
   id?: number;
@@ -43,6 +45,7 @@ export default function AsesorDashboard({
   const horariosRef = useRef<HTMLDivElement | null>(null);
   const solicitudesRef = useRef<HTMLDivElement | null>(null);
   const citasRef = useRef<HTMLDivElement | null>(null);
+  const calificacionesRef = useRef<HTMLDivElement | null>(null);
 
   function scrollToSection(sectionId: string) {
     const sections: Record<string, React.RefObject<HTMLDivElement | null>> = {
@@ -51,6 +54,7 @@ export default function AsesorDashboard({
       horarios: horariosRef,
       solicitudes: solicitudesRef,
       citas: citasRef,
+      calificaciones: calificacionesRef,
     };
 
     const ref = sections[sectionId];
@@ -197,28 +201,25 @@ export default function AsesorDashboard({
           </div>
 
           <div className="topbar-actions">
-            <div className="icon-btn" style={{ cursor: "pointer" }}>
-              <Bell size={17} />
-              <div className="notif-dot" />
-            </div>
+  <NotificationsPanel />
 
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 9,
-                background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 700,
-                fontSize: 14,
-                cursor: "pointer",
-              }}
-            >
-              {initials}
-            </div>
-          </div>
+  <div
+    style={{
+      width: 36,
+      height: 36,
+      borderRadius: 9,
+      background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: 700,
+      fontSize: 14,
+      cursor: "pointer",
+    }}
+  >
+    {initials}
+  </div>
+</div>
         </div>
 
         <div className="dash-content">
@@ -245,9 +246,17 @@ export default function AsesorDashboard({
             <AsesorOwnAvailability reloadKey={availabilityReload} />
           </div>
 
-          <div ref={citasRef} style={{ scrollMarginTop: "100px" }}>
-            <AsesorSessionsList reloadKey={availabilityReload} />
-          </div>
+         
+<div ref={citasRef} style={{ scrollMarginTop: "100px" }}>
+  <AsesorSessionsList reloadKey={availabilityReload} />
+</div>
+
+<div ref={calificacionesRef} style={{ scrollMarginTop: "100px" }}>
+  <AsesorRatingsList />
+</div>
+
+
+
         </div>
       </main>
 

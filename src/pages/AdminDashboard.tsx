@@ -87,10 +87,10 @@ export default function AdminDashboard({
           <div className="nav-section">
             <div className="nav-label">Administrador</div>
 
-            <button className="nav-item active">
-              <Users size={18} />
-              <span>Asesores</span>
-            </button>
+              <button className="nav-item active">
+                <Users size={18} />
+                <span>Asesores y reportes</span>
+              </button>
           </div>
 
           <div className="nav-section">

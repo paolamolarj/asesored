@@ -95,13 +95,14 @@ export default function RegisterAvailabilityForm({
         <form onSubmit={handleSubmit} style={{ display: "grid", gap: 14 }}>
           <div className="input-wrap" style={{ marginBottom: 0 }}>
             <label>Fecha</label>
-            <input
-              className="field"
-              style={{ paddingLeft: 16 }}
-              type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-            />
+           <input
+                  className="field"
+                  style={{ paddingLeft: 16 }}
+                  type="date"
+                  min={new Date().toISOString().split("T")[0]}
+                  value={fecha}
+                  onChange={(e) => setFecha(e.target.value)}
+/>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

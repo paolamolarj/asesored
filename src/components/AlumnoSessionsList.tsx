@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import RateAsesoriaForm from "./RateAsesoriaForm";
 
 interface LoggedUser {
   id?: number;
@@ -152,12 +153,16 @@ export default function AlumnoSessionsList({
 
   const proximas = asesorias.filter((a) => {
     const fecha = new Date(a.fecha + "T00:00:00");
-    return fecha >= hoy && a.estado !== "completada";
+    return (
+      fecha >= hoy &&
+      a.estado !== "completada" &&
+      a.estado !== "cancelada"
+    );
   });
 
   const historial = asesorias.filter((a) => {
     const fecha = new Date(a.fecha + "T00:00:00");
-    return fecha < hoy || a.estado === "completada";
+    return fecha < hoy || a.estado === "completada" || a.estado === "cancelada";
   });
 
   return (
@@ -257,7 +262,7 @@ export default function AlumnoSessionsList({
 
             <div className="asesoria-list">
               {historial.map((a) => (
-                <div key={a.id} className="asesoria-item">
+                <div key={a.id} className="asesoria-item" style={{ alignItems: "flex-start" }}>
                   <div
                     className="asesoria-avatar"
                     style={{ background: "rgba(255,255,255,.08)" }}
@@ -270,6 +275,13 @@ export default function AlumnoSessionsList({
                     <div className="asesoria-meta">
                       Asesor: {a.asesor_nombre} {a.asesor_apellido}
                     </div>
+
+                    {a.estado === "completada" && (
+                      <RateAsesoriaForm
+                        asesoriaId={a.id}
+                        onRated={() => fetchAsesorias()}
+                      />
+                    )}
                   </div>
 
                   <div className="asesoria-time">
