@@ -148,7 +148,7 @@ export default function RateAsesoriaForm({
             onChange={(e) => setPuntuacion(Number(e.target.value))}
           >
             {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>
+              <option style={{color:"black"}} key={n} value={n}>
                 {n} estrella{n > 1 ? "s" : ""}
               </option>
             ))}
