@@ -69,49 +69,50 @@ export default function AsesorAvailability({ asesor }: AsesorAvailabilityProps) 
     fetchHorarios();
   }, [asesor]);
 
-async function reservarHorario(disponibilidadId: number) {
-  if (!user?.id) {
-    setError("No se encontró la sesión del alumno.");
-    return;
-  }
-
-  if (!asesor) {
-    setError("No se encontró el asesor seleccionado.");
-    return;
-  }
-
-  setBookingId(disponibilidadId);
-  setError("");
-  setMessage("");
-
-  try {
-    const response = await fetch("http://localhost/asesored-api/reservar_asesoria.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        disponibilidad_id: disponibilidadId,
-        alumno_id: user.id,
-        notas: "",
-        materia: asesor.materia,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      setMessage("Solicitud enviada correctamente.");
-      fetchHorarios();
-    } else {
-      setError(data.message || "No se pudo enviar la solicitud.");
+  async function reservarHorario(disponibilidadId: number) {
+    if (!user?.id) {
+      setError("No se encontró la sesión del alumno.");
+      return;
     }
-  } catch (err) {
-    setError("No se pudo conectar con el servidor.");
-  } finally {
-    setBookingId(null);
-  }
+
+    if (!asesor) {
+      setError("No se encontró el asesor seleccionado.");
+      return;
+    }
+    if (!asesor.materia || !asesor.materia.trim()) {
+  setError("No se pudo identificar la materia seleccionada para esta solicitud.");
+  return;
 }
+
+    setBookingId(disponibilidadId);
+    setError("");
+    setMessage("");
+
+    try {
+      const response = await fetch("http://localhost/asesored-api/reservar_asesoria.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          disponibilidad_id: disponibilidadId,
+          alumno_id: user.id,
+          notas: "",
+materia: asesor.materia.trim(),        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+setMessage("La solicitud fue enviada correctamente. Ahora queda pendiente de revisión por parte del asesor.");        fetchHorarios();
+      } else {
+        setError(data.message || "No se pudo enviar la solicitud.");
+      }
+    } catch (err) {
+setError("No se pudo cargar o enviar la solicitud en este momento. Intenta nuevamente.");    } finally {
+      setBookingId(null);
+    }
+  }
 
   function formatFecha(fecha: string) {
     const d = new Date(fecha + "T00:00:00");
@@ -132,22 +133,30 @@ async function reservarHorario(disponibilidadId: number) {
     <div className="section-card" style={{ marginBottom: 24 }}>
       <div className="section-header">
         <span className="section-title">
-          Horario disponible de {asesor.nombre} {asesor.apellido}
+          Horarios disponibles
         </span>
       </div>
 
       <div className="section-body">
-        <p style={{ color: "var(--text-muted)", marginBottom: 16 }}>
-          Materia: <strong style={{ color: "var(--text-primary)" }}>{asesor.materia}</strong>
+        <p style={{ color: "var(--text-muted)", marginBottom: 16, fontSize: 14, lineHeight: 1.6 }}>
+          Selecciona uno de los horarios disponibles para enviar una solicitud de asesoría.
         </p>
 
         {message && <div className="success-msg">{message}</div>}
         {loading && <div className="success-msg">Cargando horarios...</div>}
         {error && <div className="error-msg">{error}</div>}
 
-        {!loading && !error && horarios.length === 0 && (
-          <div className="error-msg">Este asesor no tiene horarios disponibles</div>
-        )}
+       {!loading && !error && horarios.length === 0 && (
+  <div className="empty-state">
+    <div className="empty-state-icon">📅</div>
+    <div>
+      <div className="empty-state-title">Sin horarios disponibles</div>
+      <div className="empty-state-text">
+        Este asesor no tiene bloques activos por el momento. Puedes revisar más tarde o elegir otro asesor.
+      </div>
+    </div>
+  </div>
+)}
 
         {horarios.length > 0 && (
           <div className="asesoria-list">
@@ -167,7 +176,19 @@ async function reservarHorario(disponibilidadId: number) {
                   </div>
                 </div>
 
-                <div className="asesoria-time" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div
+                  className="asesoria-time"
+                  style={{
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  alignItems: "flex-end",
+  justifyContent: "center",
+  minWidth: 140,
+  width: "auto",
+  flexShrink: 0,
+}}
+                >
                   <span className="status-badge confirm">Disponible</span>
                   <button
                     className="btn-sm"

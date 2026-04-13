@@ -65,6 +65,13 @@ export default function AsesorSessionsList({
   }, [reloadKey, user?.id]);
 
   async function aceptarAsesoria(asesoriaId: number) {
+    const confirmado = window.confirm(
+  "¿Deseas aceptar esta solicitud de asesoría?"
+);
+
+if (!confirmado) {
+  return;
+}
     if (!user?.id) return;
     setUpdatingId(asesoriaId);
     setError("");
@@ -85,8 +92,7 @@ export default function AsesorSessionsList({
       const data = await response.json();
 
       if (data.success) {
-        setMessage("Solicitud aceptada.");
-        fetchAsesorias();
+setMessage("La solicitud fue aceptada correctamente.");        fetchAsesorias();
       } else {
         setError(data.message || "No se pudo aceptar la solicitud.");
       }
@@ -98,6 +104,13 @@ export default function AsesorSessionsList({
   }
 
   async function rechazarAsesoria(asesoriaId: number) {
+    const confirmado = window.confirm(
+  "¿Seguro que quieres rechazar esta solicitud? El horario volverá a estar disponible."
+);
+
+if (!confirmado) {
+  return;
+}
     if (!user?.id) return;
     setUpdatingId(asesoriaId);
     setError("");
@@ -118,8 +131,7 @@ export default function AsesorSessionsList({
       const data = await response.json();
 
       if (data.success) {
-        setMessage("Solicitud rechazada.");
-        fetchAsesorias();
+setMessage("La solicitud fue rechazada y el horario volvió a quedar disponible.");        fetchAsesorias();
       } else {
         setError(data.message || "No se pudo rechazar la solicitud.");
       }
@@ -131,6 +143,13 @@ export default function AsesorSessionsList({
   }
 
   async function marcarCompletada(asesoriaId: number) {
+    const confirmado = window.confirm(
+  "¿Seguro que deseas marcar esta asesoría como completada?"
+);
+
+if (!confirmado) {
+  return;
+}
     if (!user?.id) return;
 
     setUpdatingId(asesoriaId);
@@ -155,14 +174,12 @@ export default function AsesorSessionsList({
       const data = await response.json();
 
       if (data.success) {
-        setMessage("Asesoría marcada como completada.");
-        fetchAsesorias();
+setMessage("La asesoría fue marcada como completada correctamente.");        fetchAsesorias();
       } else {
         setError(data.message || "No se pudo actualizar la asesoría.");
       }
     } catch (err) {
-      setError("No se pudo conectar con el servidor.");
-    } finally {
+setError("No se pudo actualizar la asesoría en este momento. Intenta nuevamente.");    } finally {
       setUpdatingId(null);
     }
   }
@@ -195,38 +212,52 @@ export default function AsesorSessionsList({
     }
   }
 
-  function getStatusLabel(estado: string) {
-    switch (estado) {
-      case "confirmada":
-        return "Confirmada";
-      case "pendiente":
-        return "Pendiente";
-      case "cancelada":
-        return "Cancelada";
-      case "completada":
-        return "Completada";
-      default:
-        return estado;
-    }
+ function getStatusLabel(estado: string) {
+  switch (estado) {
+    case "confirmada":
+      return "Aceptada";
+    case "pendiente":
+      return "Pendiente";
+    case "cancelada":
+      return "Cancelada";
+    case "completada":
+      return "Completada";
+    default:
+      return estado;
   }
+}
 
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
 
-  const proximas = asesorias.filter((a) => {
+ function getDateTimeValue(fecha: string, hora: string) {
+  return new Date(`${fecha}T${hora}`).getTime();
+}
+
+const proximas = asesorias
+  .filter((a) => {
     const fecha = new Date(a.fecha + "T00:00:00");
     return fecha >= hoy && a.estado !== "completada" && a.estado !== "cancelada";
-  });
+  })
+  .sort(
+    (a, b) =>
+      getDateTimeValue(a.fecha, a.hora) - getDateTimeValue(b.fecha, b.hora)
+  );
 
-  const historial = asesorias.filter((a) => {
+const historial = asesorias
+  .filter((a) => {
     const fecha = new Date(a.fecha + "T00:00:00");
     return fecha < hoy || a.estado === "completada" || a.estado === "cancelada";
-  });
+  })
+  .sort(
+    (a, b) =>
+      getDateTimeValue(b.fecha, b.hora) - getDateTimeValue(a.fecha, a.hora)
+  );
 
   return (
     <div className="section-card" style={{ marginBottom: 24 }}>
       <div className="section-header">
-        <span className="section-title">Mis asesorías</span>
+        <span className="section-title">Gestión de asesorías</span>
       </div>
 
       <div className="section-body">
@@ -234,15 +265,33 @@ export default function AsesorSessionsList({
         {error && <div className="error-msg">{error}</div>}
         {message && <div className="success-msg">{message}</div>}
 
-        {!loading && !error && asesorias.length === 0 && (
-          <div className="error-msg">Aún no tienes asesorías registradas</div>
-        )}
-
+      {!loading && !error && asesorias.length === 0 && (
+  <div className="empty-state">
+    <div className="empty-state-icon">👨‍🏫</div>
+    <div>
+      <div className="empty-state-title">Sin asesorías registradas</div>
+      <div className="empty-state-text">
+        Cuando los alumnos envíen solicitudes o se confirmen asesorías, aparecerán aquí.
+      </div>
+    </div>
+  </div>
+)}
         {!loading && !error && proximas.length > 0 && (
           <>
-            <h3 style={{ marginBottom: 14, fontSize: 16, fontWeight: 700 }}>
-              Próximas asesorías
-            </h3>
+            <h3
+  style={{
+    marginBottom: 14,
+    fontSize: 16,
+    fontWeight: 800,
+    color: "var(--text-primary)",
+    letterSpacing: "-0.01em",
+  }}
+>
+  Próximas asesorías
+</h3>
+<p className="muted-small" style={{ marginBottom: 14 }}>
+  Se muestran primero las solicitudes y asesorías activas ordenadas por fecha y hora.
+</p>
 
             <div className="asesoria-list" style={{ marginBottom: 24 }}>
               {proximas.map((a) => (
@@ -263,7 +312,16 @@ export default function AsesorSessionsList({
                     )}
                   </div>
 
-                  <div className="asesoria-time" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div className="asesoria-time" style={{
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  alignItems: "flex-end",
+  justifyContent: "center",
+  minWidth: 140,
+  width: "auto",
+  flexShrink: 0,
+}}>
                     <div className="asesoria-hour">{formatHora(a.hora)}</div>
                     <div className="asesoria-date">{formatFecha(a.fecha)}</div>
                     <span className={`status-badge ${getStatusClass(a.estado)}`}>
@@ -308,9 +366,20 @@ export default function AsesorSessionsList({
 
         {!loading && !error && historial.length > 0 && (
           <>
-            <h3 style={{ marginBottom: 14, fontSize: 16, fontWeight: 700 }}>
-              Historial de asesorías
-            </h3>
+            <h3
+  style={{
+    marginBottom: 14,
+    fontSize: 16,
+    fontWeight: 800,
+    color: "var(--text-primary)",
+    letterSpacing: "-0.01em",
+  }}
+>
+  Historial de asesorías
+</h3>
+<p className="muted-small" style={{ marginBottom: 14 }}>
+  Aquí aparecen asesorías completadas, canceladas o ya finalizadas.
+</p>
 
             <div className="asesoria-list">
               {historial.map((a) => (

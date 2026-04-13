@@ -145,9 +145,9 @@ export default function RegisterPage({ goLogin }: RegisterPageProps) {
               <div key={s} style={{ display:"flex",alignItems:"center",gap:8 }}>
                 <div
                   style={{
-                    width:36,
-                    height:36,
-                    borderRadius:10,
+                    width:38,
+                    height:38,
+                    borderRadius:12,
                     background: step >= s ? "linear-gradient(135deg,var(--teal),#00a88b)" : "rgba(255,255,255,.08)",
                     border: step >= s ? "none" : "1.5px solid var(--border)",
                     display:"flex",
@@ -163,7 +163,7 @@ export default function RegisterPage({ goLogin }: RegisterPageProps) {
                 </div>
 
                 <span style={{ color: step >= s ? "var(--text-primary)" : "var(--text-muted)", fontSize:13.5, fontWeight:600 }}>
-                  {s === 1 ? "Datos personales" : "Cuenta y rol"}
+                  {s === 1 ? "Datos académicos" : "Cuenta y rol"}
                 </span>
 
                 {s < 2 && <ChevronRight size={14} color="var(--text-muted)" />}
@@ -177,7 +177,7 @@ export default function RegisterPage({ goLogin }: RegisterPageProps) {
         <div className="auth-card anim-scale-in">
           <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
             <h2 className="syne" style={{ fontSize:26,fontWeight:800 }}>
-              {step === 1 ? "Datos personales" : "Tu cuenta"}
+              {step === 1 ? "Datos académicos" : "Tu cuenta"}
             </h2>
             <span style={{ color:"var(--text-muted)",fontSize:13 }}>Paso {step}/2</span>
           </div>
@@ -238,9 +238,9 @@ export default function RegisterPage({ goLogin }: RegisterPageProps) {
                     <label>Carrera</label>
                     <span className="icon"><BookOpen size={16} /></span>
                     <select className="field field-select" value={form.carrera} onChange={(e) => upd("carrera", e.target.value)}>
-                      <option value="" style={{color:"black"}} >Seleccionar...</option>
+                      <option value="" >Seleccionar...</option>
                       {CARRERAS.map((c) => (
-                        <option key={c} value={c} style={{color:"black"}} >{c}</option>
+                        <option key={c} value={c}  >{c}</option>
                       ))}
                     </select>
                   </div>
@@ -249,9 +249,9 @@ export default function RegisterPage({ goLogin }: RegisterPageProps) {
                     <label>Semestre</label>
                     <span className="icon"><TrendingUp size={16} /></span>
                     <select className="field field-select" value={form.semestre} onChange={(e) => upd("semestre", e.target.value)}>
-                      <option value="" style={{color:"black"}} >Semestre</option>
+                      <option value=""  >Semestre</option>
                       {[1,2,3,4,5,6,7,8,9,10].map((s) => (
-                        <option key={s} value={s} style={{color:"black"}} >{s}°</option>
+                        <option key={s} value={s}  >{s}°</option>
                       ))}
                     </select>
                   </div>

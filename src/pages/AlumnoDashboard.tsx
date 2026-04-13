@@ -1,10 +1,7 @@
 import { useRef, useState } from "react";
 import {
   BookOpen,
-  Bell,
-  Search,
   LogOut,
-  Settings,
   X,
   Menu,
 } from "lucide-react";
@@ -92,9 +89,16 @@ export default function AlumnoDashboard({
           <div className="logo-icon">
             <BookOpen size={22} color="#0D1B2A" />
           </div>
-          <span className="syne" style={{ fontSize: 20, fontWeight: 800 }}>
-            AsesoRed
-          </span>
+         <span
+  className="syne"
+  style={{
+    fontSize: 19,
+    fontWeight: 800,
+    letterSpacing: "-0.03em",
+  }}
+>
+  AsesoRed
+</span>
 
           {mobileOpen && (
             <button
@@ -135,17 +139,7 @@ export default function AlumnoDashboard({
           <div className="nav-section">
             <div className="nav-label">Cuenta</div>
 
-            <button
-              className="nav-item"
-              onClick={() => {
-                setActiveNav("config");
-                setMobileOpen(false);
-                toast("Configuración próximamente.");
-              }}
-            >
-              <Settings size={18} />
-              <span>Configuración</span>
-            </button>
+      
 
             <button className="nav-item" onClick={handleLogout}>
               <LogOut size={18} />
@@ -168,9 +162,16 @@ export default function AlumnoDashboard({
             >
               {fullName}
             </div>
-            <div style={{ color: "var(--text-muted)", fontSize: 12 }}>
-              Alumno
-            </div>
+           <div
+  style={{
+    color: "rgba(255,255,255,0.55)",
+    fontSize: 11.5,
+    fontWeight: 600,
+    letterSpacing: "0.01em",
+  }}
+>
+  Alumno
+</div>
           </div>
         </div>
       </aside>
@@ -191,10 +192,7 @@ export default function AlumnoDashboard({
               <Menu size={18} />
             </button>
 
-            <div className="search-bar">
-              <Search size={16} color="var(--text-muted)" />
-              <input placeholder="Buscar materia, asesor..." />
-            </div>
+            
           </div>
 
           <div className="topbar-actions">
@@ -219,11 +217,20 @@ export default function AlumnoDashboard({
 </div>
         </div>
 
-        <div className="dash-content">
+        <div className="dash-content content-narrow">
           <div ref={inicioRef} className="greeting anim-fade-up">
-            <h1 className="syne" style={{ fontSize: 28, fontWeight: 800, marginBottom: 6 }}>
-              Hola, {firstName} 👋
-            </h1>
+           <h1
+  style={{
+    fontFamily: "'Outfit', sans-serif",
+    fontSize: 40,
+    fontWeight: 700,
+    marginBottom: 6,
+    lineHeight: 1.1,
+    letterSpacing: "-0.02em",
+  }}
+>
+  Hola, {firstName} 👋
+</h1>
             <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
               Busca asesores por materia, revisa horarios y administra tus solicitudes.
             </p>

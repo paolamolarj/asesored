@@ -1,6 +1,6 @@
 # AsesoRed - Plataforma Educativa IEST Anáhuac
 
-## 🚀 Instrucciones para ejecutar el proyecto
+## Instrucciones para ejecutar el proyecto
 
 ### Opción 1: Instalación Local (Recomendado)
 
@@ -25,7 +25,7 @@ npm run build
 npm run preview
 ```
 
-## 📦 Tecnologías utilizadas
+## Tecnologías utilizadas
 
 - **React 18** - Framework JavaScript
 - **Vite** - Build tool y dev server
@@ -33,7 +33,7 @@ npm run preview
 - **Lucide React** - Iconos
 - **Google Fonts** - Playfair Display & DM Sans
 
-## 🎨 Características
+## Características
 
 - ✅ Diseño responsive (mobile, tablet, desktop)
 - ✅ Animaciones suaves y transiciones
@@ -42,7 +42,7 @@ npm run preview
 - ✅ Componentes interactivos
 - ✅ Optimizado para rendimiento
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```
 asesored/
@@ -56,7 +56,7 @@ asesored/
 └── tailwind.config.js   # Configuración de Tailwind
 ```
 
-## 🎯 Secciones de la página
+## Secciones de la página
 
 1. **Hero** - Presentación principal con formulario de búsqueda
 2. **Estadísticas** - Métricas clave de la plataforma
@@ -66,13 +66,13 @@ asesored/
 6. **CTA** - Call to action final
 7. **Footer** - Información de contacto y enlaces
 
-## 🛠️ Comandos disponibles
+## Comandos disponibles
 
 - `npm run dev` - Inicia servidor de desarrollo
 - `npm run build` - Crea build de producción
 - `npm run preview` - Previsualiza build de producción
 
-## ⚡ Solución de problemas
+## Solución de problemas
 
 Si el CSS no se carga:
 1. Asegúrate de que `index.css` esté importado en `main.jsx`
@@ -81,4 +81,4 @@ Si el CSS no se carga:
 
 ---
 
-Desarrollado para IEST Anáhuac 🎓
+Desarrollado para IEST Anáhuac 

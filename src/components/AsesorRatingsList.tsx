@@ -81,7 +81,7 @@ export default function AsesorRatingsList() {
   return (
     <div className="section-card" style={{ marginBottom: 24 }}>
       <div className="section-header">
-        <span className="section-title">Mis calificaciones</span>
+        <span className="section-title">Calificaciones recibidas</span>
       </div>
 
       <div className="section-body">
@@ -110,7 +110,15 @@ export default function AsesorRatingsList() {
             </div>
 
             {calificaciones.length === 0 ? (
-              <div className="error-msg">Aún no has recibido calificaciones.</div>
+              <div className="empty-state">
+  <div className="empty-state-icon">⭐</div>
+  <div>
+    <div className="empty-state-title">Sin calificaciones todavía</div>
+    <div className="empty-state-text">
+      Cuando los alumnos califiquen asesorías completadas, aquí podrás ver el promedio y los comentarios.
+    </div>
+  </div>
+</div>
             ) : (
               <div className="asesor-list">
                 {calificaciones.map((c) => (

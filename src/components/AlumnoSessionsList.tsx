@@ -66,6 +66,14 @@ export default function AlumnoSessionsList({
   }, [reloadKey, user?.id]);
 
   async function cancelarAsesoria(asesoriaId: number) {
+    const confirmado = window.confirm(
+  "¿Seguro que quieres cancelar esta asesoría? El horario volverá a quedar disponible."
+);
+
+if (!confirmado) {
+  return;
+}
+    
     if (!user?.id) {
       setError("No se encontró la sesión del alumno.");
       return;
@@ -93,14 +101,12 @@ export default function AlumnoSessionsList({
       const data = await response.json();
 
       if (data.success) {
-        setMessage("Asesoría cancelada correctamente.");
-        fetchAsesorias();
+setMessage("La asesoría se canceló correctamente y el horario volvió a quedar disponible.");        fetchAsesorias();
       } else {
         setError(data.message || "No se pudo cancelar la asesoría.");
       }
     } catch (err) {
-      setError("No se pudo conectar con el servidor.");
-    } finally {
+setError("No se pudo completar la operación en este momento. Intenta nuevamente.");    } finally {
       setUpdatingId(null);
     }
   }
@@ -133,42 +139,56 @@ export default function AlumnoSessionsList({
     }
   }
 
-  function getStatusLabel(estado: string) {
-    switch (estado) {
-      case "confirmada":
-        return "Confirmada";
-      case "pendiente":
-        return "Pendiente";
-      case "cancelada":
-        return "Cancelada";
-      case "completada":
-        return "Completada";
-      default:
-        return estado;
-    }
+ function getStatusLabel(estado: string) {
+  switch (estado) {
+    case "confirmada":
+      return "Aceptada";
+    case "pendiente":
+      return "Pendiente";
+    case "cancelada":
+      return "Cancelada";
+    case "completada":
+      return "Completada";
+    default:
+      return estado;
   }
+}
 
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
 
-  const proximas = asesorias.filter((a) => {
+function getDateTimeValue(fecha: string, hora: string) {
+  return new Date(`${fecha}T${hora}`).getTime();
+}
+
+const proximas = asesorias
+  .filter((a) => {
     const fecha = new Date(a.fecha + "T00:00:00");
     return (
       fecha >= hoy &&
       a.estado !== "completada" &&
       a.estado !== "cancelada"
     );
-  });
+  })
+  .sort(
+    (a, b) =>
+      getDateTimeValue(a.fecha, a.hora) - getDateTimeValue(b.fecha, b.hora)
+  );
 
-  const historial = asesorias.filter((a) => {
+const historial = asesorias
+  .filter((a) => {
     const fecha = new Date(a.fecha + "T00:00:00");
     return fecha < hoy || a.estado === "completada" || a.estado === "cancelada";
-  });
+  })
+  .sort(
+    (a, b) =>
+      getDateTimeValue(b.fecha, b.hora) - getDateTimeValue(a.fecha, a.hora)
+  );
 
   return (
     <div className="section-card" style={{ marginBottom: 24 }}>
       <div className="section-header">
-        <span className="section-title">Mis asesorías reservadas</span>
+        <span className="section-title">Mis asesorías</span>
       </div>
 
       <div className="section-body">
@@ -176,22 +196,34 @@ export default function AlumnoSessionsList({
         {error && <div className="error-msg">{error}</div>}
         {message && <div className="success-msg">{message}</div>}
 
-        {!loading && !error && asesorias.length === 0 && (
-          <div className="error-msg">Aún no tienes asesorías reservadas</div>
-        )}
+      {!loading && !error && asesorias.length === 0 && (
+  <div className="empty-state">
+    <div className="empty-state-icon">📘</div>
+    <div>
+      <div className="empty-state-title">Aún no tienes asesorías</div>
+      <div className="empty-state-text">
+        Cuando solicites una asesoría, aparecerá aquí con su estado y seguimiento.
+      </div>
+    </div>
+  </div>
+)}
 
         {!loading && !error && proximas.length > 0 && (
           <>
             <h3
-              style={{
-                marginBottom: 14,
-                fontSize: 16,
-                fontWeight: 700,
-                color: "var(--text-primary)",
-              }}
-            >
-              Próximas asesorías
-            </h3>
+  style={{
+    marginBottom: 14,
+    fontSize: 16,
+    fontWeight: 800,
+    color: "var(--text-primary)",
+    letterSpacing: "-0.01em",
+  }}
+>
+  Próximas asesorías
+</h3>
+<p className="muted-small" style={{ marginBottom: 14 }}>
+  Aquí se muestran primero las asesorías activas ordenadas por fecha y hora.
+</p>
 
             <div className="asesoria-list" style={{ marginBottom: 24 }}>
               {proximas.map((a) => (
@@ -223,7 +255,16 @@ export default function AlumnoSessionsList({
 
                   <div
                     className="asesoria-time"
-                    style={{ display: "flex", flexDirection: "column", gap: 8 }}
+                    style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 10,
+                              alignItems: "flex-end",
+                              justifyContent: "center",
+                              minWidth: 140,
+                              width: "auto",
+                              flexShrink: 0,
+                            }}
                   >
                     <div className="asesoria-hour">{formatHora(a.hora)}</div>
                     <div className="asesoria-date">{formatFecha(a.fecha)}</div>
@@ -249,16 +290,20 @@ export default function AlumnoSessionsList({
 
         {!loading && !error && historial.length > 0 && (
           <>
-            <h3
-              style={{
-                marginBottom: 14,
-                fontSize: 16,
-                fontWeight: 700,
-                color: "var(--text-primary)",
-              }}
-            >
-              Historial
-            </h3>
+           <h3
+  style={{
+    marginBottom: 14,
+    fontSize: 16,
+    fontWeight: 800,
+    color: "var(--text-primary)",
+    letterSpacing: "-0.01em",
+  }}
+>
+  Historial
+</h3>
+<p className="muted-small" style={{ marginBottom: 14 }}>
+  Aquí puedes revisar asesorías completadas, canceladas o pasadas.
+</p>
 
             <div className="asesoria-list">
               {historial.map((a) => (

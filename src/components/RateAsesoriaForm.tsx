@@ -76,6 +76,12 @@ export default function RateAsesoriaForm({
       setError("La puntuación debe ser entre 1 y 5.");
       return;
     }
+    const comentarioLimpio = comentario.trim();
+
+if (comentario.length > 0 && comentarioLimpio.length < 3) {
+  setError("Si agregas un comentario, escribe al menos 3 caracteres.");
+  return;
+}
 
     setLoading(true);
 
@@ -96,14 +102,12 @@ export default function RateAsesoriaForm({
       const data = await response.json();
 
       if (data.success) {
-        setMessage("Calificación guardada correctamente.");
-        onRated?.();
+setMessage("Tu calificación fue enviada correctamente.");        onRated?.();
       } else {
         setError(data.message || "No se pudo guardar la calificación.");
       }
     } catch (err) {
-      setError("No se pudo conectar con el servidor.");
-    } finally {
+setError("No se pudo guardar la calificación en este momento. Intenta nuevamente.");    } finally {
       setLoading(false);
     }
   }

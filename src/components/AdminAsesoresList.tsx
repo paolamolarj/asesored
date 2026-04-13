@@ -83,9 +83,17 @@ export default function AdminAsesoresList() {
         {error && <div className="error-msg">{error}</div>}
         {message && <div className="success-msg">{message}</div>}
 
-        {!loading && !error && asesores.length === 0 && (
-          <div className="error-msg">No hay asesores registrados</div>
-        )}
+       {!loading && !error && asesores.length === 0 && (
+  <div className="empty-state">
+    <div className="empty-state-icon">🧑‍💼</div>
+    <div>
+      <div className="empty-state-title">No hay asesores registrados</div>
+      <div className="empty-state-text">
+        Cuando el administrador active usuarios como asesores, aparecerán listados aquí.
+      </div>
+    </div>
+  </div>
+)}
 
         {asesores.length > 0 && (
           <div className="asesor-list">

@@ -76,12 +76,17 @@ export default function SelectMateriasAsesor({
     });
   }, [catalogo, selected, search]);
 
-  function addMateria(nombre: string) {
-    if (!selected.includes(nombre)) {
-      setSelected((prev) => [...prev, nombre]);
-    }
-    setSearch("");
+ function addMateria(nombre: string) {
+  const nombreLimpio = nombre.trim();
+
+  if (!nombreLimpio) return;
+
+  if (!selected.some((m) => m.toLowerCase() === nombreLimpio.toLowerCase())) {
+    setSelected((prev) => [...prev, nombreLimpio]);
   }
+
+  setSearch("");
+}
 
   function removeMateria(nombre: string) {
     setSelected((prev) => prev.filter((m) => m !== nombre));

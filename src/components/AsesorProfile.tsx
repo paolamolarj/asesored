@@ -79,19 +79,49 @@ export default function AsesorProfile({ asesor }: AsesorProfileProps) {
 
         {perfil && (
           <>
-            <div style={{ marginBottom: 16 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
-                {perfil.asesor.nombre} {perfil.asesor.apellido}
-              </h3>
-              <p style={{ color: "var(--text-muted)", marginBottom: 8 }}>
-                {perfil.asesor.email}
-              </p>
-              <span className={`status-badge ${perfil.asesor.activo ? "confirm" : "cancel"}`}>
-                {perfil.asesor.activo ? "Activo" : "Inactivo"}
-              </span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                className="asesor-avatar"
+                style={{
+                  width: 60,
+                  height: 60,
+                  fontSize: 24,
+                  background: "rgba(255,255,255,.08)",
+                }}
+              >
+                👨‍🏫
+              </div>
+
+              <div>
+                <h3
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 800,
+                    marginBottom: 4,
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {perfil.asesor.nombre} {perfil.asesor.apellido}
+                </h3>
+
+                <p style={{ color: "var(--text-muted)", marginBottom: 8, fontSize: 14 }}>
+                  {perfil.asesor.email}
+                </p>
+
+                <span className={`status-badge ${perfil.asesor.activo ? "confirm" : "cancel"}`}>
+                  {perfil.asesor.activo ? "Asesor activo" : "Asesor inactivo"}
+                </span>
+              </div>
             </div>
 
-            <div style={{ marginBottom: 18 }}>
+            <div style={{ marginBottom: 20 }}>
               <div
                 style={{
                   fontSize: 13,
@@ -129,7 +159,13 @@ export default function AsesorProfile({ asesor }: AsesorProfileProps) {
               )}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gap: 14,
+              }}
+            >
               <div className="stat-card teal">
                 <div className="stat-value">{perfil.stats.total_asesorias}</div>
                 <div className="stat-label">Asesorías registradas</div>

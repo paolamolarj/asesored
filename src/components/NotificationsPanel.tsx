@@ -229,15 +229,15 @@ export default function NotificationsPanel() {
           {error && <div className="error-msg">{error}</div>}
 
           {!loading && !error && notificaciones.length === 0 && (
-            <div
-              style={{
-                color: "var(--text-muted)",
-                fontSize: 14,
-                padding: 10,
-              }}
-            >
-              No tienes notificaciones.
-            </div>
+           <div className="empty-state" style={{ marginTop: 6 }}>
+  <div className="empty-state-icon">🔔</div>
+  <div>
+    <div className="empty-state-title">Sin notificaciones</div>
+    <div className="empty-state-text">
+      Aquí aparecerán avisos sobre solicitudes, cancelaciones, recordatorios y cambios de estado.
+    </div>
+  </div>
+</div>
           )}
 
           {!loading &&

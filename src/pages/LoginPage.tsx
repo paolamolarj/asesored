@@ -154,23 +154,24 @@ export default function LoginPage({ goRegister, goLogin }: LoginPageProps) {
 
           <div className="anim-fade-up d4" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
-              { icon: "🎓", text: "Más de 500 estudiantes activos" },
-              { icon: "⭐", text: "4.9/5 de satisfacción promedio" },
-              { icon: "📅", text: "Agenda en menos de 2 minutos" },
-            ].map((item, i) => (
+  { icon:"🎓", text:"Encuentra apoyo académico por materia" },
+  { icon:"⭐", text:"Conecta con asesores disponibles" },
+  { icon:"📅", text:"Solicita y administra tus asesorías" },
+].map((item, i) => (
               <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  background: "rgba(255,255,255,.05)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  padding: "12px 18px",
-                  textAlign: "left",
-                }}
-              >
+  key={i}
+  style={{
+    display:"flex",
+    alignItems:"center",
+    gap:12,
+    background:"rgba(255,255,255,.04)",
+    border:"1px solid rgba(255,255,255,.07)",
+    borderRadius:14,
+    padding:"13px 16px",
+    textAlign:"left",
+    backdropFilter:"blur(8px)"
+  }}
+>
                 <span style={{ fontSize: 22 }}>{item.icon}</span>
                 <span style={{ color: "var(--text-muted)", fontSize: 14.5, fontWeight: 500 }}>
                   {item.text}
@@ -183,9 +184,18 @@ export default function LoginPage({ goRegister, goLogin }: LoginPageProps) {
 
       <div className="auth-form-side">
         <div className="auth-card anim-scale-in">
-          <h2 className="syne" style={{ fontSize: 28, fontWeight: 800, marginBottom: 6 }}>
-            Iniciar Sesión
-          </h2>
+          <h2
+  className="syne"
+  style={{
+    fontSize: 30,
+    fontWeight: 800,
+    marginBottom: 6,
+    lineHeight: 1.1,
+    letterSpacing: "-0.02em",
+  }}
+>
+  Iniciar sesión
+</h2>
 
           <p style={{ color: "var(--text-muted)", fontSize: 15, marginBottom: 28 }}>
             ¿No tienes cuenta?{" "}

@@ -1,10 +1,7 @@
 import { useRef, useState } from "react";
 import {
   BookOpen,
-  Bell,
-  Search,
   LogOut,
-  Settings,
   X,
   Menu,
 } from "lucide-react";
@@ -99,9 +96,16 @@ export default function AsesorDashboard({
           <div className="logo-icon">
             <BookOpen size={22} color="#0D1B2A" />
           </div>
-          <span className="syne" style={{ fontSize: 20, fontWeight: 800 }}>
-            AsesoRed
-          </span>
+          <span
+  className="syne"
+  style={{
+    fontSize: 19,
+    fontWeight: 800,
+    letterSpacing: "-0.03em",
+  }}
+>
+  AsesoRed
+</span>
 
           {mobileOpen && (
             <button
@@ -142,18 +146,7 @@ export default function AsesorDashboard({
           <div className="nav-section">
             <div className="nav-label">Cuenta</div>
 
-            <button
-              className="nav-item"
-              onClick={() => {
-                setActiveNav("config");
-                setMobileOpen(false);
-                toast("Configuración próximamente.");
-              }}
-            >
-              <Settings size={18} />
-              <span>Configuración</span>
-            </button>
-
+           
             <button className="nav-item" onClick={handleLogout}>
               <LogOut size={18} />
               <span>Cerrar sesión</span>
@@ -175,9 +168,16 @@ export default function AsesorDashboard({
             >
               {fullName}
             </div>
-            <div style={{ color: "var(--text-muted)", fontSize: 12 }}>
-              Asesor
-            </div>
+            <div
+  style={{
+    color: "rgba(255,255,255,0.55)",
+    fontSize: 11.5,
+    fontWeight: 600,
+    letterSpacing: "0.01em",
+  }}
+>
+  Asesor
+</div>
           </div>
         </div>
       </aside>
@@ -194,10 +194,7 @@ export default function AsesorDashboard({
               <Menu size={18} />
             </button>
 
-            <div className="search-bar">
-              <Search size={16} color="var(--text-muted)" />
-              <input placeholder="Buscar alumno, materia..." />
-            </div>
+           
           </div>
 
           <div className="topbar-actions">
@@ -222,11 +219,20 @@ export default function AsesorDashboard({
 </div>
         </div>
 
-        <div className="dash-content">
+        <div className="dash-content content-narrow">
           <div ref={inicioRef} className="greeting anim-fade-up">
-            <h1 className="syne" style={{ fontSize: 28, fontWeight: 800, marginBottom: 6 }}>
-              Hola, {firstName} 👨‍🏫
-            </h1>
+           <h1
+  style={{
+    fontFamily: "'Outfit', sans-serif",
+    fontSize: 40,
+    fontWeight: 700,
+    marginBottom: 6,
+    lineHeight: 1.1,
+    letterSpacing: "-0.02em",
+  }}
+>
+  Hola, {firstName} 👨‍🏫
+</h1>
             <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
               Administra tus materias, horarios y solicitudes de asesoría.
             </p>
