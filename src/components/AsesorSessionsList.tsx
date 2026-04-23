@@ -257,8 +257,7 @@ const historial = asesorias
   return (
     <div className="section-card" style={{ marginBottom: 24 }}>
       <div className="section-header">
-        <span className="section-title">Gestión de asesorías</span>
-      </div>
+<span className="section-title">Solicitudes y asesorías</span>      </div>
 
       <div className="section-body">
         {loading && <div className="success-msg">Cargando asesorías...</div>}

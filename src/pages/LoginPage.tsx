@@ -130,7 +130,7 @@ export default function LoginPage({ goRegister, goLogin }: LoginPageProps) {
 
           <h1
             className="syne anim-fade-up d2"
-            style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, marginBottom: 16 }}
+            style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, marginBottom: 16, color: "white" }}
           >
             Bienvenido a
             <br />
@@ -192,6 +192,7 @@ export default function LoginPage({ goRegister, goLogin }: LoginPageProps) {
     marginBottom: 6,
     lineHeight: 1.1,
     letterSpacing: "-0.02em",
+    color: "white"
   }}
 >
   Iniciar sesión

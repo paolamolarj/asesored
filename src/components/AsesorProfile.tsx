@@ -96,7 +96,7 @@ export default function AsesorProfile({ asesor }: AsesorProfileProps) {
                   background: "rgba(255,255,255,.08)",
                 }}
               >
-                👨‍🏫
+                🎓
               </div>
 
               <div>

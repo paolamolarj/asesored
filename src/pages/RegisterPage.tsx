@@ -128,7 +128,7 @@ export default function RegisterPage({ goLogin }: RegisterPageProps) {
             <Users size={36} color="#0D1B2A" />
           </div>
 
-          <h1 className="syne anim-fade-up d1" style={{ fontSize:38,fontWeight:800,lineHeight:1.15,marginBottom:16 }}>
+          <h1 className="syne anim-fade-up d1" style={{ fontSize:38,fontWeight:800,lineHeight:1.15,marginBottom:16, color:"white" }}>
             Únete a la comunidad
             <br />
             <span style={{ background:"linear-gradient(90deg,var(--amber),#ffd060)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent" }}>
@@ -176,7 +176,7 @@ export default function RegisterPage({ goLogin }: RegisterPageProps) {
       <div className="auth-form-side">
         <div className="auth-card anim-scale-in">
           <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
-            <h2 className="syne" style={{ fontSize:26,fontWeight:800 }}>
+            <h2 className="syne" style={{ fontSize:26,fontWeight:800, color:"white" }}>
               {step === 1 ? "Datos académicos" : "Tu cuenta"}
             </h2>
             <span style={{ color:"var(--text-muted)",fontSize:13 }}>Paso {step}/2</span>

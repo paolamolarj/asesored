@@ -98,7 +98,7 @@ export default function AsesorAvailability({ asesor }: AsesorAvailabilityProps) 
           disponibilidad_id: disponibilidadId,
           alumno_id: user.id,
           notas: "",
-materia: asesor.materia.trim(),        }),
+          materia: asesor.materia.trim(),        }),
       });
 
       const data = await response.json();
@@ -166,7 +166,7 @@ setError("No se pudo cargar o enviar la solicitud en este momento. Intenta nueva
                   className="asesoria-avatar"
                   style={{ background: "rgba(0,201,167,.12)" }}
                 >
-                  📅
+                  🗓️
                 </div>
 
                 <div className="asesoria-info">

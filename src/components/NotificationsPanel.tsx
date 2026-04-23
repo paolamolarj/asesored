@@ -107,9 +107,7 @@ export default function NotificationsPanel() {
       const data = await response.json();
 
       if (data.success) {
-        setNotificaciones((prev) =>
-          prev.map((n) => ({ ...n, leida: 1 }))
-        );
+        setNotificaciones((prev) => prev.map((n) => ({ ...n, leida: 1 })));
       }
     } catch (err) {
       console.error("No se pudieron marcar todas como leídas");
@@ -174,40 +172,14 @@ export default function NotificationsPanel() {
       </button>
 
       {open && (
-        <div
-          style={{
-            position: "absolute",
-            top: "48px",
-            right: 0,
-            width: 380,
-            maxHeight: 460,
-            overflowY: "auto",
-            background: "var(--navy-light)",
-            border: "1px solid var(--border)",
-            borderRadius: 16,
-            boxShadow: "0 20px 60px rgba(0,0,0,.45)",
-            zIndex: 200,
-            padding: 12,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 10,
-              marginBottom: 10,
-              padding: "4px 6px",
-            }}
-          >
-            <div style={{ fontWeight: 800, fontSize: 15 }}>
-              Notificaciones
-            </div>
+        <div className="notifications-panel">
+          <div className="notifications-panel-header">
+            <div className="notifications-panel-title">Notificaciones</div>
 
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="notifications-panel-actions">
               <button
                 type="button"
-                className="btn-sm"
+                className="notifications-action-btn"
                 onClick={marcarTodasLeidas}
                 disabled={actionLoading || notificaciones.length === 0}
               >
@@ -216,7 +188,7 @@ export default function NotificationsPanel() {
 
               <button
                 type="button"
-                className="btn-sm"
+                className="notifications-action-btn"
                 onClick={limpiarLeidas}
                 disabled={actionLoading || notificaciones.length === 0}
               >
@@ -229,15 +201,15 @@ export default function NotificationsPanel() {
           {error && <div className="error-msg">{error}</div>}
 
           {!loading && !error && notificaciones.length === 0 && (
-           <div className="empty-state" style={{ marginTop: 6 }}>
-  <div className="empty-state-icon">🔔</div>
-  <div>
-    <div className="empty-state-title">Sin notificaciones</div>
-    <div className="empty-state-text">
-      Aquí aparecerán avisos sobre solicitudes, cancelaciones, recordatorios y cambios de estado.
-    </div>
-  </div>
-</div>
+            <div className="empty-state notifications-empty">
+              <div className="empty-state-icon">🔔</div>
+              <div>
+                <div className="empty-state-title">Sin notificaciones</div>
+                <div className="empty-state-text">
+                  Aquí aparecerán avisos sobre solicitudes, cancelaciones, recordatorios y cambios de estado.
+                </div>
+              </div>
+            </div>
           )}
 
           {!loading &&
@@ -247,63 +219,19 @@ export default function NotificationsPanel() {
                 key={n.id}
                 type="button"
                 onClick={() => marcarLeida(n.id)}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  background: Number(n.leida)
-                    ? "transparent"
-                    : "rgba(0,201,167,.08)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  padding: 12,
-                  marginBottom: 10,
-                  cursor: "pointer",
-                  color: "var(--text-primary)",
-                }}
+                className={`notification-item ${Number(n.leida) ? "read" : "unread"}`}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 10,
-                    marginBottom: 6,
-                  }}
-                >
-                  <span style={{ fontWeight: 700, fontSize: 13.5 }}>
-                    {n.titulo}
-                  </span>
+                <div className="notification-item-top">
+                  <span className="notification-item-title">{n.titulo}</span>
 
                   {!Number(n.leida) && (
-                    <span
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 700,
-                        color: "var(--teal)",
-                      }}
-                    >
-                      Nueva
-                    </span>
+                    <span className="notification-pill">Nueva</span>
                   )}
                 </div>
 
-                <div
-                  style={{
-                    color: "var(--text-muted)",
-                    fontSize: 13,
-                    lineHeight: 1.5,
-                    marginBottom: 8,
-                  }}
-                >
-                  {n.mensaje}
-                </div>
+                <div className="notification-item-message">{n.mensaje}</div>
 
-                <div
-                  style={{
-                    color: "var(--text-muted)",
-                    fontSize: 11.5,
-                  }}
-                >
+                <div className="notification-item-date">
                   {formatFecha(n.created_at)}
                 </div>
               </button>

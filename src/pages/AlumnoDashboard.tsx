@@ -87,7 +87,7 @@ export default function AlumnoDashboard({
       <aside className={`sidebar${mobileOpen ? " mobile-open" : ""}`}>
         <div className="sidebar-logo">
           <div className="logo-icon">
-            <BookOpen size={22} color="#0D1B2A" />
+            <BookOpen size={22} color="#FFFFFF" />
           </div>
          <span
   className="syne"
@@ -95,6 +95,7 @@ export default function AlumnoDashboard({
     fontSize: 19,
     fontWeight: 800,
     letterSpacing: "-0.03em",
+    color: "var(--text-primary)",
   }}
 >
   AsesoRed
@@ -152,16 +153,17 @@ export default function AlumnoDashboard({
           <div className="user-avatar">{initials}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
-              style={{
-                fontWeight: 700,
-                fontSize: 14,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {fullName}
-            </div>
+  style={{
+    fontWeight: 700,
+    fontSize: 14,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    color: "var(--text-primary)",
+  }}
+>
+  {fullName}
+</div>
            <div
   style={{
     color: "rgba(255,255,255,0.55)",
@@ -219,21 +221,13 @@ export default function AlumnoDashboard({
 
         <div className="dash-content content-narrow">
           <div ref={inicioRef} className="greeting anim-fade-up">
-           <h1
-  style={{
-    fontFamily: "'Outfit', sans-serif",
-    fontSize: 40,
-    fontWeight: 700,
-    marginBottom: 6,
-    lineHeight: 1.1,
-    letterSpacing: "-0.02em",
-  }}
->
+           <h1 className="page-hero-title">
   Hola, {firstName} 👋
 </h1>
-            <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
-              Busca asesores por materia, revisa horarios y administra tus solicitudes.
-            </p>
+
+<p className="page-hero-subtitle">
+  Encuentra asesores académicos, revisa horarios disponibles y da seguimiento a tus solicitudes.
+</p>
           </div>
 
           <div ref={buscarRef} style={{ marginBottom: 24, scrollMarginTop: "100px" }}>
