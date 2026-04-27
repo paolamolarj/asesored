@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface LoggedUser {
   id?: number;
@@ -22,6 +22,7 @@ export default function NotificationsPanel() {
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+const panelRef = useRef<HTMLDivElement>(null);
 
   const savedUser = localStorage.getItem("asesored_user");
   const user: LoggedUser | null = savedUser ? JSON.parse(savedUser) : null;
@@ -54,6 +55,15 @@ export default function NotificationsPanel() {
   useEffect(() => {
     fetchNotificaciones();
   }, [user?.id]);
+  useEffect(() => {
+  function handleClickOutside(e: MouseEvent) {
+    if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -158,7 +168,8 @@ export default function NotificationsPanel() {
   const unreadCount = notificaciones.filter((n) => !Number(n.leida)).length;
 
   return (
-    <div style={{ position: "relative" }}>
+    <div ref={panelRef} style={{ position: "relative" }}>
+
       <button
         className="icon-btn"
         style={{ cursor: "pointer" }}

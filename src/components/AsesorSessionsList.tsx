@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Toast from "./Toast";
 
 interface LoggedUser {
   id?: number;
@@ -31,6 +32,16 @@ export default function AsesorSessionsList({
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+const [loadingAction, setLoadingAction] = useState(false);
+const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+function showSuccess(message: string) {
+  setToast({ message, type: "success" });
+}
+
+function showError(message: string) {
+  setToast({ message, type: "error" });
+}
 
   const savedUser = localStorage.getItem("asesored_user");
   const user: LoggedUser | null = savedUser ? JSON.parse(savedUser) : null;
@@ -74,8 +85,9 @@ if (!confirmado) {
 }
     if (!user?.id) return;
     setUpdatingId(asesoriaId);
-    setError("");
-    setMessage("");
+    setLoadingAction(true);
+setError("");
+setMessage("");
 
     try {
       const response = await fetch("http://localhost/asesored-api/aceptar_asesoria.php", {
@@ -92,15 +104,11 @@ if (!confirmado) {
       const data = await response.json();
 
       if (data.success) {
-setMessage("La solicitud fue aceptada correctamente.");        fetchAsesorias();
-      } else {
-        setError(data.message || "No se pudo aceptar la solicitud.");
-      }
+showSuccess("Solicitud aceptada correctamente.");      } else {
+showError(data.message || "No se pudo aceptar la solicitud.");      }
     } catch (err) {
-      setError("No se pudo conectar con el servidor.");
-    } finally {
-      setUpdatingId(null);
-    }
+showError("No se pudo conectar con el servidor.");    } finally {
+setLoadingAction(false);    }
   }
 
   async function rechazarAsesoria(asesoriaId: number) {
@@ -112,6 +120,7 @@ if (!confirmado) {
   return;
 }
     if (!user?.id) return;
+    setLoadingAction(true);
     setUpdatingId(asesoriaId);
     setError("");
     setMessage("");
@@ -131,15 +140,11 @@ if (!confirmado) {
       const data = await response.json();
 
       if (data.success) {
-setMessage("La solicitud fue rechazada y el horario volvió a quedar disponible.");        fetchAsesorias();
-      } else {
-        setError(data.message || "No se pudo rechazar la solicitud.");
-      }
+showSuccess("Solicitud rechazada correctamente.");      } else {
+showError(data.message || "No se pudo rechazar la solicitud.");      }
     } catch (err) {
-      setError("No se pudo conectar con el servidor.");
-    } finally {
-      setUpdatingId(null);
-    }
+showError("No se pudo conectar con el servidor.");    } finally {
+setLoadingAction(false);    }
   }
 
   async function marcarCompletada(asesoriaId: number) {
@@ -174,10 +179,8 @@ if (!confirmado) {
       const data = await response.json();
 
       if (data.success) {
-setMessage("La asesoría fue marcada como completada correctamente.");        fetchAsesorias();
-      } else {
-        setError(data.message || "No se pudo actualizar la asesoría.");
-      }
+showSuccess("La asesoría fue marcada como completada.");      } else {
+showError(data.message || "No se pudo completar la asesoría.");      }
     } catch (err) {
 setError("No se pudo actualizar la asesoría en este momento. Intenta nuevamente.");    } finally {
       setUpdatingId(null);
@@ -332,18 +335,14 @@ const historial = asesorias
                         <button
                           className="btn-sm"
                           onClick={() => aceptarAsesoria(a.id)}
-                          disabled={updatingId === a.id}
-                        >
-                          {updatingId === a.id ? "Procesando..." : "Aceptar"}
-                        </button>
+disabled={loadingAction}                        >
+{loadingAction ? "Procesando..." : "Aceptar"}                        </button>
 
                         <button
                           className="btn-sm"
                           onClick={() => rechazarAsesoria(a.id)}
-                          disabled={updatingId === a.id}
-                        >
-                          {updatingId === a.id ? "Procesando..." : "Rechazar"}
-                        </button>
+disabled={loadingAction}                        >
+{loadingAction ? "Procesando..." : "Aceptar"}                        </button>
                       </>
                     )}
 
@@ -351,10 +350,8 @@ const historial = asesorias
                       <button
                         className="btn-sm"
                         onClick={() => marcarCompletada(a.id)}
-                        disabled={updatingId === a.id}
-                      >
-                        {updatingId === a.id ? "Guardando..." : "Marcar completada"}
-                      </button>
+disabled={loadingAction}                      >
+{loadingAction ? "Procesando..." : "Marcar completada"}                      </button>
                     )}
                   </div>
                 </div>
@@ -408,6 +405,13 @@ const historial = asesorias
             </div>
           </>
         )}
+        {toast && (
+  <Toast
+    message={toast.message}
+    type={toast.type}
+    onClose={() => setToast(null)}
+  />
+)}
       </div>
     </div>
   );

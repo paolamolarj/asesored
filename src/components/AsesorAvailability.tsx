@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Toast from "./Toast";
 
 interface AsesorData {
   id: number;
@@ -23,18 +24,29 @@ interface LoggedUser {
   email?: string;
   rol?: string;
 }
-
+// 1. Actualiza la interfaz
 interface AsesorAvailabilityProps {
   asesor: AsesorData | null;
+  onSolicitudEnviada?: () => void; // ← agrega esto
 }
 
-export default function AsesorAvailability({ asesor }: AsesorAvailabilityProps) {
+// 2. Desestructura la nueva prop
+export default function AsesorAvailability({ asesor, onSolicitudEnviada }: AsesorAvailabilityProps) {
   const [horarios, setHorarios] = useState<Horario[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [bookingId, setBookingId] = useState<number | null>(null);
+const [loadingAction, setLoadingAction] = useState(false);
+const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
+function showSuccess(message: string) {
+  setToast({ message, type: "success" });
+}
+
+function showError(message: string) {
+  setToast({ message, type: "error" });
+}
   const savedUser = localStorage.getItem("asesored_user");
   const user: LoggedUser | null = savedUser ? JSON.parse(savedUser) : null;
 
@@ -61,7 +73,8 @@ export default function AsesorAvailability({ asesor }: AsesorAvailabilityProps) 
     } catch (err) {
       setError("No se pudo conectar con el servidor.");
     } finally {
-      setLoading(false);
+      setLoadingAction(false);
+setBookingId(null);
     }
   }
 
@@ -85,10 +98,12 @@ export default function AsesorAvailability({ asesor }: AsesorAvailabilityProps) 
 }
 
     setBookingId(disponibilidadId);
-    setError("");
-    setMessage("");
+    setLoadingAction(true);
+setError("");
+setMessage("");
 
     try {
+      
       const response = await fetch("http://localhost/asesored-api/reservar_asesoria.php", {
         method: "POST",
         headers: {
@@ -103,14 +118,15 @@ export default function AsesorAvailability({ asesor }: AsesorAvailabilityProps) 
 
       const data = await response.json();
 
-      if (data.success) {
-setMessage("La solicitud fue enviada correctamente. Ahora queda pendiente de revisión por parte del asesor.");        fetchHorarios();
+     if (data.success) {
+  onSolicitudEnviada?.();
+  fetchHorarios();
+  showSuccess("Solicitud enviada correctamente.");
       } else {
-        setError(data.message || "No se pudo enviar la solicitud.");
+        showError(data.message || "No se pudo enviar la solicitud.");
       }
     } catch (err) {
-setError("No se pudo cargar o enviar la solicitud en este momento. Intenta nuevamente.");    } finally {
-      setBookingId(null);
+showError("No se pudo conectar con el servidor.");      setBookingId(null);
     }
   }
 
@@ -191,17 +207,24 @@ setError("No se pudo cargar o enviar la solicitud en este momento. Intenta nueva
                 >
                   <span className="status-badge confirm">Disponible</span>
                   <button
-                    className="btn-sm"
-                    onClick={() => reservarHorario(h.id)}
-                    disabled={bookingId === h.id}
-                  >
-                    {bookingId === h.id ? "Enviando..." : "Solicitar"}
-                  </button>
+  className="btn-sm"
+  onClick={() => reservarHorario(h.id)}
+  disabled={bookingId === h.id || loadingAction}
+>
+  {bookingId === h.id || loadingAction ? "Enviando..." : "Solicitar"}
+</button>
                 </div>
               </div>
             ))}
           </div>
         )}
+        {toast && (
+  <Toast
+    message={toast.message}
+    type={toast.type}
+    onClose={() => setToast(null)}
+  />
+)}
       </div>
     </div>
   );

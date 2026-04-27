@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Toast from "./Toast";
 
 interface LoggedUser {
   id?: number;
@@ -21,14 +22,25 @@ export default function RegisterAvailabilityForm({
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+const [loadingAction, setLoadingAction] = useState(false);
+const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+function showSuccess(message: string) {
+  setToast({ message, type: "success" });
+}
+
+function showError(message: string) {
+  setToast({ message, type: "error" });
+}
 
   const savedUser = localStorage.getItem("asesored_user");
   const user: LoggedUser | null = savedUser ? JSON.parse(savedUser) : null;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError("");
-    setMessage("");
+   setLoadingAction(true);
+setError("");
+setMessage("");
 
     if (!fecha || !horaInicio || !horaFin) {
       setError("Completa todos los campos.");
@@ -72,14 +84,12 @@ export default function RegisterAvailabilityForm({
         setHoraInicio("");
         setHoraFin("");
         onCreated?.();
+        showSuccess("El horario se registró correctamente.");
       } else {
-        setError(data.message || "No se pudo registrar el horario.");
-      }
+showError(data.message || "No se pudo registrar el horario.");      }
     } catch (err) {
-      setError("No se pudo conectar con el servidor.");
-    } finally {
-      setLoading(false);
-    }
+showError("No se pudo conectar con el servidor.");    } finally {
+setLoadingAction(false);    }
   }
 
   return (
@@ -129,11 +139,18 @@ export default function RegisterAvailabilityForm({
             </div>
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Guardando..." : "Guardar horario"}
-          </button>
+          <button type="submit" className="btn-primary" disabled={loadingAction}>
+  {loadingAction ? "Guardando..." : "Guardar horario"}
+</button>
         </form>
       </div>
+      {toast && (
+  <Toast
+    message={toast.message}
+    type={toast.type}
+    onClose={() => setToast(null)}
+  />
+)}
     </div>
   );
 }
