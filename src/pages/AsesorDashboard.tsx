@@ -8,6 +8,7 @@ import { asesorNavItems } from "../data/dashboardData";
 import AsesorRatingsList from "../components/AsesorRatingsList";
 import NotificationsPanel from "../components/NotificationsPanel";
 import ToastContainer from "../components/ToastContainer";
+import PerfilPanel from "../components/PerfilPanel";
 import { useToast } from "../hooks/useToast";
 import { useTheme } from "../hooks/useTheme";
 
@@ -30,6 +31,7 @@ export default function AsesorDashboard({ goLogout, user }: AsesorDashboardProps
   const [availabilityReload, setAvailabilityReload] = useState(0);
   const { toasts, showToast, removeToast } = useToast();
   const { isDark, toggleTheme } = useTheme();
+  const mainRef = useRef<HTMLElement | null>(null);
 
   const inicioRef = useRef<HTMLDivElement | null>(null);
   const materiasRef = useRef<HTMLDivElement | null>(null);
@@ -38,31 +40,47 @@ export default function AsesorDashboard({ goLogout, user }: AsesorDashboardProps
   const citasRef = useRef<HTMLDivElement | null>(null);
   const calificacionesRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const sectionRefs: { id: string; ref: React.RefObject<HTMLDivElement | null> }[] = [
-      { id: "inicio", ref: inicioRef },
-      { id: "materias", ref: materiasRef },
-      { id: "horarios", ref: horariosRef },
-      { id: "solicitudes", ref: solicitudesRef },
-      { id: "citas", ref: citasRef },
-      { id: "calificaciones", ref: calificacionesRef },
-    ];
+ useEffect(() => {
+  const sectionRefs: { id: string; ref: React.RefObject<HTMLDivElement | null> }[] = [
+    { id: "inicio", ref: inicioRef },
+    { id: "materias", ref: materiasRef },
+    { id: "horarios", ref: horariosRef },
+    { id: "solicitudes", ref: solicitudesRef },
+    { id: "citas", ref: citasRef },
+    { id: "calificaciones", ref: calificacionesRef },
+  ];
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const matched = sectionRefs.find((s) => s.ref.current === entry.target);
-            if (matched) setActiveNav(matched.id);
-          }
-        });
-      },
-      { root: null, rootMargin: "-30% 0px -60% 0px", threshold: 0 }
-    );
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const matched = sectionRefs.find((s) => s.ref.current === entry.target);
+          if (matched) setActiveNav(matched.id);
+        }
+      });
+    },
+    { root: null, rootMargin: "0px 0px -80% 0px", threshold: 0 }
+  );
 
-    sectionRefs.forEach(({ ref }) => { if (ref.current) observer.observe(ref.current); });
-    return () => observer.disconnect();
-  }, []);
+  sectionRefs.forEach(({ ref }) => { if (ref.current) observer.observe(ref.current); });
+
+  // Fix última sección
+  function handleScroll() {
+    const el = mainRef.current;
+    if (!el) return;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 100) {
+      setActiveNav("calificaciones");
+    }
+  }
+
+  const mainEl = mainRef.current;
+  mainEl?.addEventListener("scroll", handleScroll);
+
+  return () => {
+    observer.disconnect();
+    mainEl?.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
   function scrollToSection(sectionId: string) {
     const sections: Record<string, React.RefObject<HTMLDivElement | null>> = {
@@ -143,16 +161,15 @@ export default function AsesorDashboard({ goLogout, user }: AsesorDashboardProps
             <div style={{ fontWeight: 700, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
               {fullName}
             </div>
-            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.01em" }}>
-              Asesor
-            </div>
+            <div className="sidebar-user-rol">Asesor</div>
           </div>
         </div>
       </aside>
 
       <div className={`overlay${mobileOpen ? " visible" : ""}`} onClick={() => setMobileOpen(false)} />
 
-      <main className="dash-main">
+      <main ref={mainRef} className="dash-main">
+
         <div className="dash-topbar">
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <button className="icon-btn hamburger" onClick={() => setMobileOpen(true)}>
@@ -165,47 +182,109 @@ export default function AsesorDashboard({ goLogout, user }: AsesorDashboardProps
               {isDark ? "☀️" : "🌙"}
             </button>
             <NotificationsPanel />
-            <div style={{ width: 36, height: 36, borderRadius: 9, background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
-              {initials}
+            <PerfilPanel initials={initials} />
+          </div>
+        </div>
+
+<div className="dash-content content-narrow">
+
+  {/* INICIO */}
+  <div ref={inicioRef} style={{ scrollMarginTop: "64px", minHeight: "40vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingBottom: 32 }}>
+    <div className="greeting anim-fade-up">
+      <p style={{ fontSize: 13, fontWeight: 700, color: "var(--teal)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>
+        Panel de asesor 👨‍🏫
+      </p>
+      <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.03em", color: "var(--text-primary)", marginBottom: 16 }}>
+        Hola, {firstName}
+      </h1>
+      <p className="page-hero-subtitle" style={{ fontSize: 16, marginBottom: 32 }}>
+        Administra tus materias, disponibilidad y solicitudes de asesoría académica.
+      </p>
+
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+        {[
+          { icon: "📚", label: "Mis materias", desc: "Gestionar materias", action: () => handleNavClick("materias") },
+          { icon: "🕒", label: "Mis horarios", desc: "Ver disponibilidad", action: () => handleNavClick("horarios") },
+          { icon: "📋", label: "Solicitudes", desc: "Revisar pendientes", action: () => handleNavClick("solicitudes") },
+          { icon: "⭐", label: "Calificaciones", desc: "Ver reseñas", action: () => handleNavClick("calificaciones") },
+        ].map((item) => (
+          <button
+            key={item.label}
+            onClick={item.action}
+            style={{
+              display: "flex", alignItems: "center", gap: 12,
+              padding: "14px 20px", borderRadius: 14,
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.09)",
+              color: "var(--text-primary)", cursor: "pointer",
+              transition: "all 0.18s ease", textAlign: "left",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(37,99,235,0.12)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+          >
+            <span style={{ fontSize: 22 }}>{item.icon}</span>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 13 }}>{item.label}</div>
+              <div style={{ color: "var(--text-muted)", fontSize: 11.5 }}>{item.desc}</div>
             </div>
-          </div>
-        </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
 
-        <div className="dash-content content-narrow">
-          <div ref={inicioRef} className="greeting anim-fade-up">
-            <h1 className="page-hero-title">Hola, {firstName} 👨‍🏫</h1>
-            <p className="page-hero-subtitle">
-              Administra tus materias, disponibilidad y solicitudes de asesoría académica.
-            </p>
-          </div>
+  {/* MATERIAS */}
+  <div ref={materiasRef} style={{ scrollMarginTop: "64px", paddingTop: 16, paddingBottom: 16 }}>
+    <div style={{ marginBottom: 20 }}>
+      <p className="section-eyebrow">Configuración</p>
+      <h2 className="section-heading">Mis materias</h2>
+    </div>
+    <SelectMateriasAsesor
+      onSaved={() => showToast("Materias guardadas correctamente.", "success")}
+    />
+  </div>
 
-          <div ref={materiasRef} style={{ scrollMarginTop: "100px" }}>
-            <SelectMateriasAsesor
-              onSaved={() => showToast("Materias guardadas correctamente.", "success")}
-            />
-          </div>
+  {/* HORARIOS */}
+  <div ref={horariosRef} style={{ scrollMarginTop: "64px", paddingTop: 16, paddingBottom: 16 }}>
+    <div style={{ marginBottom: 20 }}>
+      <p className="section-eyebrow">Disponibilidad</p>
+      <h2 className="section-heading">Registrar horario</h2>
+    </div>
+    <RegisterAvailabilityForm
+      onCreated={() => {
+        setAvailabilityReload((prev) => prev + 1);
+        showToast("Horario registrado correctamente.", "success");
+      }}
+    />
+  </div>
 
-          <div ref={horariosRef} style={{ scrollMarginTop: "100px" }}>
-            <RegisterAvailabilityForm
-              onCreated={() => {
-                setAvailabilityReload((prev) => prev + 1);
-                showToast("Horario registrado correctamente.", "success");
-              }}
-            />
-          </div>
+  {/* SOLICITUDES */}
+  <div ref={solicitudesRef} style={{ scrollMarginTop: "64px", paddingTop: 16, paddingBottom: 16 }}>
+    <div style={{ marginBottom: 20 }}>
+      <p className="section-eyebrow">Gestión</p>
+      <h2 className="section-heading">Mis horarios disponibles</h2>
+    </div>
+    <AsesorOwnAvailability reloadKey={availabilityReload} showToast={showToast} />
+  </div>
 
-          <div ref={solicitudesRef} style={{ marginBottom: 24, scrollMarginTop: "100px" }}>
-            <AsesorOwnAvailability reloadKey={availabilityReload} showToast={showToast} />
-          </div>
+  {/* CITAS */}
+  <div ref={citasRef} style={{ scrollMarginTop: "64px", paddingTop: 16, paddingBottom: 16 }}>
+    <div style={{ marginBottom: 20 }}>
+      <p className="section-eyebrow">Seguimiento</p>
+      <h2 className="section-heading">Solicitudes y asesorías</h2>
+    </div>
+    <AsesorSessionsList reloadKey={availabilityReload} showToast={showToast} />
+  </div>
 
-          <div ref={citasRef} style={{ scrollMarginTop: "100px" }}>
-            <AsesorSessionsList reloadKey={availabilityReload} showToast={showToast} />
-          </div>
+  {/* CALIFICACIONES */}
+<div ref={calificacionesRef} style={{ scrollMarginTop: "64px", paddingTop: 16, paddingBottom: 300 }}>    <div style={{ marginBottom: 20 }}>
+      <p className="section-eyebrow">Retroalimentación</p>
+      <h2 className="section-heading">Mis calificaciones</h2>
+    </div>
+    <AsesorRatingsList />
+  </div>
 
-          <div ref={calificacionesRef} style={{ scrollMarginTop: "100px" }}>
-            <AsesorRatingsList />
-          </div>
-        </div>
+</div>
       </main>
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />

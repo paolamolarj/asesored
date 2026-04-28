@@ -131,7 +131,7 @@ export default function AlumnoDashboard({ goLogout, user }: AlumnoDashboardProps
             <div style={{ fontWeight: 700, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
               {fullName}
             </div>
-            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 11.5, fontWeight: 600 }}>
+            <div style={{fontSize: 11.5, fontWeight: 600 }}>
               Alumno
             </div>
           </div>
@@ -158,32 +158,88 @@ export default function AlumnoDashboard({ goLogout, user }: AlumnoDashboardProps
 
         <div className="dash-content content-narrow">
 
-          {/* Inicio — ref envuelve greeting + buscador para que tenga altura suficiente */}
-          <div ref={inicioRef} style={{ scrollMarginTop: "64px" }}>
-            <div className="greeting anim-fade-up" style={{ marginBottom: 24 }}>
-              <h1 className="page-hero-title">Hola, {firstName} 👋</h1>
-              <p className="page-hero-subtitle">
-                Encuentra asesores académicos, revisa horarios disponibles y da seguimiento a tus solicitudes.
-              </p>
+           <div ref={inicioRef} style={{ scrollMarginTop: "64px", minHeight: "40vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingBottom: 32 }}>
+    <div className="greeting anim-fade-up">
+      <p style={{ fontSize: 13, fontWeight: 700, color: "var(--teal)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>
+        Bienvenido de vuelta 👋
+      </p>
+      <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.03em", color: "var(--text-primary)", marginBottom: 16 }}>
+        Hola, {firstName}
+      </h1>
+      <p className="page-hero-subtitle" style={{ fontSize: 16, marginBottom: 32 }}>
+        Encuentra asesores académicos, revisa horarios disponibles y da seguimiento a tus solicitudes.
+      </p>
+
+       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+        {[
+          { icon: "🔍", label: "Busca un asesor", desc: "Por materia", action: () => handleNavClick("buscar") },
+          { icon: "📅", label: "Mis asesorías", desc: "Ver seguimiento", action: () => handleNavClick("citas") },
+        ].map((item) => (
+          <button
+            key={item.label}
+            onClick={item.action}
+            style={{
+              display: "flex", alignItems: "center", gap: 12,
+              padding: "14px 20px", borderRadius: 14,
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.09)",
+              color: "var(--text-primary)", cursor: "pointer",
+              transition: "all 0.18s ease", textAlign: "left",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(37,99,235,0.12)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+          >
+            <span style={{ fontSize: 24 }}>{item.icon}</span>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 14 }}>{item.label}</div>
+              <div style={{ color: "var(--text-muted)", fontSize: 12 }}>{item.desc}</div>
             </div>
-            <SearchAsesores onSelectAsesor={(asesor) => setSelectedAsesor(asesor)} />
-          </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
 
-          {/* Buscar — perfil y disponibilidad del asesor seleccionado */}
-          <div ref={buscarRef} style={{ scrollMarginTop: "64px" }}>
-            <AsesorProfile asesor={selectedAsesor} />
-            <AsesorAvailability
-              asesor={selectedAsesor}
-              onSolicitudEnviada={() => showToast("Solicitud enviada correctamente.", "success")}
-            />
-          </div>
+         
+  {/* BUSCAR */}
+  <div ref={buscarRef} style={{ scrollMarginTop: "64px", paddingTop: 16, paddingBottom: 16 }}>
+    <div style={{ marginBottom: 20 }}>
+      <p style={{ fontSize: 11, fontWeight: 700, color: "var(--teal)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>
+        Paso 1
+      </p>
+      <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 24, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
+        Buscar asesor
+      </h2>
+    </div>
+    <SearchAsesores onSelectAsesor={(asesor) => {
+  setSelectedAsesor(asesor);
+  setTimeout(() => {
+    document.querySelector(".asesor-profile-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
+}} />
+    <div style={{ marginTop: 16 }}>
+      <AsesorProfile asesor={selectedAsesor} />
+      <AsesorAvailability
+        asesor={selectedAsesor}
+        onSolicitudEnviada={() => showToast("Solicitud enviada correctamente.", "success")}
+      />
+    </div>
+  </div>
 
-          {/* Citas */}
-          <div ref={citasRef} style={{ scrollMarginTop: "64px" }}>
-            <AlumnoSessionsList showToast={showToast} />
-          </div>
+            {/* CITAS */}
+  <div ref={citasRef} style={{ scrollMarginTop: "64px", paddingTop: 16, paddingBottom: 40 }}>
+    <div style={{ marginBottom: 20 }}>
+      <p style={{ fontSize: 11, fontWeight: 700, color: "var(--teal)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>
+        Seguimiento
+      </p>
+      <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 24, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
+        Mis asesorías
+      </h2>
+    </div>
+    <AlumnoSessionsList showToast={showToast} />
+  </div>
 
-        </div>
+</div>
       </main>
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />

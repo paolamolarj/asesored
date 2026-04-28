@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Toast from "./Toast";
 
 interface AsesorData {
   id: number;
@@ -24,45 +23,32 @@ interface LoggedUser {
   email?: string;
   rol?: string;
 }
-// 1. Actualiza la interfaz
+
 interface AsesorAvailabilityProps {
   asesor: AsesorData | null;
-  onSolicitudEnviada?: () => void; // ← agrega esto
+  onSolicitudEnviada?: () => void;
 }
 
-// 2. Desestructura la nueva prop
 export default function AsesorAvailability({ asesor, onSolicitudEnviada }: AsesorAvailabilityProps) {
   const [horarios, setHorarios] = useState<Horario[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [bookingId, setBookingId] = useState<number | null>(null);
-const [loadingAction, setLoadingAction] = useState(false);
-const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
-function showSuccess(message: string) {
-  setToast({ message, type: "success" });
-}
-
-function showError(message: string) {
-  setToast({ message, type: "error" });
-}
   const savedUser = localStorage.getItem("asesored_user");
   const user: LoggedUser | null = savedUser ? JSON.parse(savedUser) : null;
 
   async function fetchHorarios() {
     if (!asesor?.id) return;
 
-    setLoading(true);
+    setLoading(true);  // ← activa loading
     setError("");
-    setMessage("");
     setHorarios([]);
 
     try {
       const response = await fetch(
         `http://localhost/asesored-api/obtener_disponibilidad.php?asesor_id=${asesor.id}`
       );
-
       const data = await response.json();
 
       if (data.success) {
@@ -70,87 +56,69 @@ function showError(message: string) {
       } else {
         setError(data.message || "No se pudo cargar la disponibilidad.");
       }
-    } catch (err) {
+    } catch {
       setError("No se pudo conectar con el servidor.");
     } finally {
-      setLoadingAction(false);
-setBookingId(null);
+      setLoading(false);  // ← siempre apaga loading
     }
   }
 
   useEffect(() => {
     fetchHorarios();
-  }, [asesor]);
+  }, [asesor?.id]); // ← usa asesor?.id no asesor completo
 
   async function reservarHorario(disponibilidadId: number) {
-    if (!user?.id) {
-      setError("No se encontró la sesión del alumno.");
+    if (!user?.id) { setError("No se encontró la sesión del alumno."); return; }
+    if (!asesor) { setError("No se encontró el asesor seleccionado."); return; }
+    if (!asesor.materia?.trim()) {
+      setError("No se pudo identificar la materia seleccionada.");
       return;
     }
-
-    if (!asesor) {
-      setError("No se encontró el asesor seleccionado.");
-      return;
-    }
-    if (!asesor.materia || !asesor.materia.trim()) {
-  setError("No se pudo identificar la materia seleccionada para esta solicitud.");
-  return;
-}
 
     setBookingId(disponibilidadId);
-    setLoadingAction(true);
-setError("");
-setMessage("");
+    setError("");
 
     try {
-      
       const response = await fetch("http://localhost/asesored-api/reservar_asesoria.php", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           disponibilidad_id: disponibilidadId,
           alumno_id: user.id,
           notas: "",
-          materia: asesor.materia.trim(),        }),
+          materia: asesor.materia.trim(),
+        }),
       });
 
       const data = await response.json();
 
-     if (data.success) {
-  onSolicitudEnviada?.();
-  fetchHorarios();
-  showSuccess("Solicitud enviada correctamente.");
+      if (data.success) {
+        onSolicitudEnviada?.(); // ← dispara el toast del dashboard
+        fetchHorarios();
       } else {
-        showError(data.message || "No se pudo enviar la solicitud.");
+        setError(data.message || "No se pudo enviar la solicitud.");
       }
-    } catch (err) {
-showError("No se pudo conectar con el servidor.");      setBookingId(null);
+    } catch {
+      setError("No se pudo conectar con el servidor.");
+    } finally {
+      setBookingId(null);
     }
   }
 
   function formatFecha(fecha: string) {
-    const d = new Date(fecha + "T00:00:00");
-    return d.toLocaleDateString("es-MX", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return new Date(fecha + "T00:00:00").toLocaleDateString("es-MX", {
+      year: "numeric", month: "long", day: "numeric",
     });
   }
 
-  function formatHora(hora: string) {
-    return hora.slice(0, 5);
-  }
+  function formatHora(hora: string) { return hora.slice(0, 5); }
 
   if (!asesor) return null;
 
   return (
     <div className="section-card" style={{ marginBottom: 24 }}>
       <div className="section-header">
-        <span className="section-title">
-          Horarios disponibles
-        </span>
+        <span className="section-title">Horarios disponibles</span>
       </div>
 
       <div className="section-body">
@@ -158,73 +126,54 @@ showError("No se pudo conectar con el servidor.");      setBookingId(null);
           Selecciona uno de los horarios disponibles para enviar una solicitud de asesoría.
         </p>
 
-        {message && <div className="success-msg">{message}</div>}
-        {loading && <div className="success-msg">Cargando horarios...</div>}
+        {loading && (
+          <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--text-muted)", fontSize: 14, padding: "8px 0" }}>
+            <div className="spinner" /> Cargando horarios...
+          </div>
+        )}
         {error && <div className="error-msg">{error}</div>}
 
-       {!loading && !error && horarios.length === 0 && (
-  <div className="empty-state">
-    <div className="empty-state-icon">📅</div>
-    <div>
-      <div className="empty-state-title">Sin horarios disponibles</div>
-      <div className="empty-state-text">
-        Este asesor no tiene bloques activos por el momento. Puedes revisar más tarde o elegir otro asesor.
-      </div>
-    </div>
-  </div>
-)}
+        {!loading && !error && horarios.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-state-icon">📅</div>
+            <div>
+              <div className="empty-state-title">Sin horarios disponibles</div>
+              <div className="empty-state-text">
+                Este asesor no tiene bloques activos por el momento. Puedes revisar más tarde o elegir otro asesor.
+              </div>
+            </div>
+          </div>
+        )}
 
-        {horarios.length > 0 && (
+        {!loading && horarios.length > 0 && (
           <div className="asesoria-list">
             {horarios.map((h) => (
               <div key={h.id} className="asesoria-item">
-                <div
-                  className="asesoria-avatar"
-                  style={{ background: "rgba(0,201,167,.12)" }}
-                >
+                <div className="asesoria-avatar" style={{ background: "rgba(0,201,167,.12)" }}>
                   🗓️
                 </div>
-
                 <div className="asesoria-info">
                   <div className="asesoria-subject">{formatFecha(h.fecha)}</div>
-                  <div className="asesoria-meta">
-                    {formatHora(h.hora_inicio)} - {formatHora(h.hora_fin)}
-                  </div>
+                  <div className="asesoria-meta">{formatHora(h.hora_inicio)} - {formatHora(h.hora_fin)}</div>
                 </div>
-
-                <div
-                  className="asesoria-time"
-                  style={{
-  display: "flex",
-  flexDirection: "column",
-  gap: 10,
-  alignItems: "flex-end",
-  justifyContent: "center",
-  minWidth: 140,
-  width: "auto",
-  flexShrink: 0,
-}}
-                >
+                <div className="asesoria-time" style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-end", justifyContent: "center", minWidth: 140, flexShrink: 0 }}>
                   <span className="status-badge confirm">Disponible</span>
                   <button
-  className="btn-sm"
-  onClick={() => reservarHorario(h.id)}
-  disabled={bookingId === h.id || loadingAction}
->
-  {bookingId === h.id || loadingAction ? "Enviando..." : "Solicitar"}
-</button>
+                    className="btn-sm"
+                    onClick={() => reservarHorario(h.id)}
+                    disabled={bookingId === h.id}
+                  >
+                    {bookingId === h.id ? (
+                      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <div className="spinner spinner-sm" /> Enviando...
+                      </span>
+                    ) : "Solicitar"}
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         )}
-        {toast && (
-  <Toast
-    message={toast.message}
-    type={toast.type}
-    onClose={() => setToast(null)}
-  />
-)}
       </div>
     </div>
   );

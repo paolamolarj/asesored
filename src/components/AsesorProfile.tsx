@@ -68,7 +68,8 @@ export default function AsesorProfile({ asesor }: AsesorProfileProps) {
   if (!asesor) return null;
 
   return (
-    <div className="section-card" style={{ marginBottom: 24 }}>
+    <div className="section-card asesor-profile-section" style={{ marginBottom: 24 }}>
+
       <div className="section-header">
         <span className="section-title">Perfil del asesor</span>
       </div>

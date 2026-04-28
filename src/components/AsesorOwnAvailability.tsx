@@ -18,11 +18,13 @@ interface Horario {
 
 interface AsesorOwnAvailabilityProps {
   reloadKey?: number;
+  showToast?: (message: string, type: "success" | "error" | "info") => void;
 }
-
 export default function AsesorOwnAvailability({
   reloadKey = 0,
+  showToast,
 }: AsesorOwnAvailabilityProps) {
+
   const [horarios, setHorarios] = useState<Horario[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
