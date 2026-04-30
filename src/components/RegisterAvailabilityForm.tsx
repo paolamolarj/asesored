@@ -79,7 +79,6 @@ setMessage("");
       const data = await response.json();
 
       if (data.success) {
-        setMessage("Horario registrado correctamente.");
         setFecha("");
         setHoraInicio("");
         setHoraFin("");

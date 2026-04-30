@@ -1,0 +1,36 @@
+/* src/components/Sidebar.css */
+.sidebar {
+  width: 220px;
+  background-color: #1f2937;
+  color: white;
+  min-height: 100vh;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-header {
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-nav li {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+}
+
+.sidebar-nav li.active {
+  background-color: #2563eb;
+  border-radius: 4px;
+}
+
+.sidebar-footer {
+  padding: 1rem;
+}

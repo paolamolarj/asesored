@@ -11,6 +11,7 @@ import ToastContainer from "../components/ToastContainer";
 import PerfilPanel from "../components/PerfilPanel";
 import { useToast } from "../hooks/useToast";
 import { useTheme } from "../hooks/useTheme";
+import AsesorStats from "../components/AsesorStats";
 
 interface LoggedUser {
   id?: number;
@@ -208,28 +209,19 @@ export default function AsesorDashboard({ goLogout, user }: AsesorDashboardProps
           { icon: "📋", label: "Solicitudes", desc: "Revisar pendientes", action: () => handleNavClick("solicitudes") },
           { icon: "⭐", label: "Calificaciones", desc: "Ver reseñas", action: () => handleNavClick("calificaciones") },
         ].map((item) => (
-          <button
-            key={item.label}
-            onClick={item.action}
-            style={{
-              display: "flex", alignItems: "center", gap: 12,
-              padding: "14px 20px", borderRadius: 14,
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
-              color: "var(--text-primary)", cursor: "pointer",
-              transition: "all 0.18s ease", textAlign: "left",
-            }}
-            onMouseEnter={e => (e.currentTarget.style.background = "rgba(37,99,235,0.12)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
-          >
-            <span style={{ fontSize: 22 }}>{item.icon}</span>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 13 }}>{item.label}</div>
-              <div style={{ color: "var(--text-muted)", fontSize: 11.5 }}>{item.desc}</div>
-            </div>
-          </button>
+          <button key={item.label} onClick={item.action} className="quick-action-btn">
+  <span style={{ fontSize: 24 }}>{item.icon}</span>
+  <div>
+    <div className="quick-action-btn-label">{item.label}</div>
+    <div className="quick-action-btn-desc">{item.desc}</div>
+  </div>
+</button>
         ))}
       </div>
+
+      <div style={{ marginTop: 32 }}>
+  <AsesorStats />
+</div>
     </div>
   </div>
 
@@ -253,7 +245,7 @@ export default function AsesorDashboard({ goLogout, user }: AsesorDashboardProps
     <RegisterAvailabilityForm
       onCreated={() => {
         setAvailabilityReload((prev) => prev + 1);
-        showToast("Horario registrado correctamente.", "success");
+        
       }}
     />
   </div>

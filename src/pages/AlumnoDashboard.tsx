@@ -175,26 +175,13 @@ export default function AlumnoDashboard({ goLogout, user }: AlumnoDashboardProps
           { icon: "🔍", label: "Busca un asesor", desc: "Por materia", action: () => handleNavClick("buscar") },
           { icon: "📅", label: "Mis asesorías", desc: "Ver seguimiento", action: () => handleNavClick("citas") },
         ].map((item) => (
-          <button
-            key={item.label}
-            onClick={item.action}
-            style={{
-              display: "flex", alignItems: "center", gap: 12,
-              padding: "14px 20px", borderRadius: 14,
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
-              color: "var(--text-primary)", cursor: "pointer",
-              transition: "all 0.18s ease", textAlign: "left",
-            }}
-            onMouseEnter={e => (e.currentTarget.style.background = "rgba(37,99,235,0.12)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
-          >
-            <span style={{ fontSize: 24 }}>{item.icon}</span>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>{item.label}</div>
-              <div style={{ color: "var(--text-muted)", fontSize: 12 }}>{item.desc}</div>
-            </div>
-          </button>
+          <button key={item.label} onClick={item.action} className="quick-action-btn">
+  <span style={{ fontSize: 24 }}>{item.icon}</span>
+  <div>
+    <div className="quick-action-btn-label">{item.label}</div>
+    <div className="quick-action-btn-desc">{item.desc}</div>
+  </div>
+</button>
         ))}
       </div>
     </div>

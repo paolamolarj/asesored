@@ -5,6 +5,7 @@ import ToastContainer from "../components/ToastContainer";
 import PerfilPanel from "../components/PerfilPanel";
 import { useToast } from "../hooks/useToast";
 import { useTheme } from "../hooks/useTheme";
+import AdminStats from "../components/AdminStats";
 
 interface LoggedUser {
   id?: number;
@@ -102,6 +103,7 @@ export default function AdminDashboard({ goLogout, user }: AdminDashboardProps) 
               Gestiona asesores activos y supervisa la operación académica de la plataforma.
             </p>
           </div>
+          <AdminStats />
 
           <AdminAsesoresList showToast={showToast} />
         </div>

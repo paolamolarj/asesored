@@ -243,7 +243,7 @@ setAsesores([]);
             )}
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <button type="submit" className="btn-primary" disabled={loadingAction}>
             {loadingAction ? "Buscando..." : "Buscar asesores"}
           </button>
         </form>
@@ -281,7 +281,16 @@ setAsesores([]);
             ))}
           </div>
         )}
+        {toast && (
+  <Toast
+    message={toast.message}
+    type={toast.type}
+    onClose={() => setToast(null)}
+  />
+)}
       </div>
     </div>
+    
   );
+  
 }
