@@ -1,6 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
 import RateAsesoriaForm from "./RateAsesoriaForm";
 import ConfirmModal from "./ConfirmModal";
+import ReagendarModal from "./ReagendarModal";
+import ExportarPDF from "./ExportarPDF";
+
 
 interface LoggedUser {
   id?: number;
@@ -19,6 +22,7 @@ interface Asesoria {
   notas?: string;
   asesor_nombre: string;
   asesor_apellido: string;
+  asesor_id: number; // ← agrega esto
 }
 
 interface AlumnoSessionsListProps {
@@ -35,6 +39,11 @@ export default function AlumnoSessionsList({ reloadKey = 0, showToast }: AlumnoS
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [confirmModal, setConfirmModal] = useState<{ id: number } | null>(null);
+const [reagendarModal, setReagendarModal] = useState<{
+  id: number;
+  asesorId: number;
+  materia: string;
+} | null>(null);
 
   // Filtros
   const [filtroEstado, setFiltroEstado] = useState<string>("todas");
@@ -43,6 +52,7 @@ export default function AlumnoSessionsList({ reloadKey = 0, showToast }: AlumnoS
 
   const savedUser = localStorage.getItem("asesored_user");
   const user: LoggedUser | null = savedUser ? JSON.parse(savedUser) : null;
+const nombreUsuario = user ? `${user.nombre} ${user.apellido}` : "Alumno";
 
   async function fetchAsesorias() {
     if (!user?.id) return;
@@ -166,8 +176,13 @@ export default function AlumnoSessionsList({ reloadKey = 0, showToast }: AlumnoS
     <>
       <div className="section-card" style={{ marginBottom: 24 }}>
         <div className="section-header">
-          <span className="section-title">Seguimiento de asesorías</span>
-        </div>
+  <span className="section-title">Seguimiento de asesorías</span>
+  <ExportarPDF
+    asesorias={asesorias}
+    nombreUsuario={nombreUsuario}
+    rol="alumno"
+  />
+</div>
 
         <div className="section-body">
 
@@ -298,19 +313,32 @@ export default function AlumnoSessionsList({ reloadKey = 0, showToast }: AlumnoS
                       <div className="asesoria-hour">{formatHora(a.hora)}</div>
                       <div className="asesoria-date">{formatFecha(a.fecha)}</div>
                       <span className={`status-badge ${getStatusClass(a.estado)}`}>{getStatusLabel(a.estado)}</span>
-                      {(a.estado === "confirmada" || a.estado === "pendiente") && (
-                        <button
-                          className="btn-sm"
-                          onClick={() => setConfirmModal({ id: a.id })}
-                          disabled={updatingId === a.id}
-                        >
-                          {updatingId === a.id ? (
-                            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                              <div className="spinner spinner-sm" /> Cancelando...
-                            </span>
-                          ) : "Cancelar"}
-                        </button>
-                      )}
+                      {a.estado === "pendiente" && (
+  <>
+    <button
+      className="btn-sm"
+      onClick={() => setReagendarModal({ id: a.id, asesorId: a.asesor_id, materia: a.materia })}
+      style={{
+        borderColor: "rgba(37,99,235,0.26)",
+        background: "rgba(37,99,235,0.10)",
+        color: "#93C5FD",
+      }}
+    >
+      Reagendar
+    </button>
+    <button
+      className="btn-sm"
+      onClick={() => setConfirmModal({ id: a.id })}
+      disabled={updatingId === a.id}
+    >
+      {updatingId === a.id ? (
+        <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="spinner spinner-sm" /> Cancelando...
+        </span>
+      ) : "Cancelar"}
+    </button>
+  </>
+)}
                     </div>
                   </div>
                 ))}
@@ -355,6 +383,19 @@ export default function AlumnoSessionsList({ reloadKey = 0, showToast }: AlumnoS
           )}
         </div>
       </div>
+      {reagendarModal && (
+  <ReagendarModal
+    asesoriaId={reagendarModal.id}
+    asesorId={reagendarModal.asesorId}
+    materia={reagendarModal.materia}
+    onReagendado={() => {
+      setReagendarModal(null);
+      fetchAsesorias();
+    }}
+    onCancel={() => setReagendarModal(null)}
+    showToast={showToast}
+  />
+)}
 
       {confirmModal && (
         <ConfirmModal

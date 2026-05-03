@@ -1,5 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import ConfirmModal from "./ConfirmModal";
+import ExportarPDF from "./ExportarPDF";
+
 
 interface LoggedUser {
   id?: number;
@@ -45,6 +47,8 @@ export default function AsesorSessionsList({ reloadKey = 0, showToast }: AsesorS
 
   const savedUser = localStorage.getItem("asesored_user");
   const user: LoggedUser | null = savedUser ? JSON.parse(savedUser) : null;
+const nombreUsuario = user ? `${user.nombre} ${user.apellido}` : "Asesor";
+
 
   async function fetchAsesorias() {
     if (!user?.id) return;
@@ -206,8 +210,14 @@ export default function AsesorSessionsList({ reloadKey = 0, showToast }: AsesorS
     <>
       <div className="section-card" style={{ marginBottom: 24 }}>
         <div className="section-header">
-          <span className="section-title">Solicitudes y asesorías</span>
-        </div>
+  <span className="section-title">Solicitudes y asesorías</span>
+  <ExportarPDF
+    asesorias={asesorias}
+    nombreUsuario={nombreUsuario}
+    rol="asesor"
+  />
+</div>
+
 
         <div className="section-body">
 

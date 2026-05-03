@@ -6,6 +6,9 @@ import PerfilPanel from "../components/PerfilPanel";
 import { useToast } from "../hooks/useToast";
 import { useTheme } from "../hooks/useTheme";
 import AdminStats from "../components/AdminStats";
+import AdminMateriasList from "../components/AdminMateriasList";
+import AdminAlumnosList from "../components/AdminAlumnosList";
+
 
 interface LoggedUser {
   id?: number;
@@ -106,6 +109,10 @@ export default function AdminDashboard({ goLogout, user }: AdminDashboardProps) 
           <AdminStats />
 
           <AdminAsesoresList showToast={showToast} />
+          <AdminMateriasList showToast={showToast} />
+          <AdminAlumnosList showToast={showToast} />
+
+
         </div>
       </main>
 
