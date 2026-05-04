@@ -3,6 +3,7 @@ import RateAsesoriaForm from "./RateAsesoriaForm";
 import ConfirmModal from "./ConfirmModal";
 import ReagendarModal from "./ReagendarModal";
 import ExportarPDF from "./ExportarPDF";
+import { enviarEmailConfirmacion } from "../emailService";
 
 
 interface LoggedUser {
@@ -22,7 +23,9 @@ interface Asesoria {
   notas?: string;
   asesor_nombre: string;
   asesor_apellido: string;
-  asesor_id: number; // ← agrega esto
+  asesor_id: number
+  asesor_email: string; 
+
 }
 
 interface AlumnoSessionsListProps {
@@ -89,9 +92,24 @@ const nombreUsuario = user ? `${user.nombre} ${user.apellido}` : "Alumno";
       });
       const data = await response.json();
       if (data.success) {
-        showToast("Asesoría cancelada correctamente.", "success");
-        fetchAsesorias();
-      } else {
+  showToast("Asesoría cancelada correctamente.", "success");
+
+  const asesoria = asesorias.find((a) => a.id === asesoriaId);
+  if (asesoria?.asesor_email) {
+    enviarEmailConfirmacion({
+      to_email: asesoria.asesor_email,
+      to_name: `${asesoria.asesor_nombre} ${asesoria.asesor_apellido}`,
+      mensaje: "Un alumno canceló su asesoría. El horario volvió a quedar disponible.",
+      materia: asesoria.materia,
+      fecha: new Date(asesoria.fecha + "T00:00:00").toLocaleDateString("es-MX", {
+        year: "numeric", month: "long", day: "numeric",
+      }),
+      hora: asesoria.hora.slice(0, 5),
+    });
+  }
+
+  fetchAsesorias();
+}else {
         showToast(data.message || "No se pudo cancelar la asesoría.", "error");
       }
     } catch {

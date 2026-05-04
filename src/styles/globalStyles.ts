@@ -36,6 +36,20 @@ body {
 }
 .syne { font-family: 'Outfit', sans-serif; }
 
+*:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
 /* ===== QUICK ACTION BUTTONS (inicio hero) ===== */
 .quick-action-btn {
   display: flex;

@@ -154,7 +154,7 @@ export default function LoginPage({ goRegister, goLogin }: LoginPageProps) {
               <input
                 className="field"
                 type="email"
-                placeholder="usuario@anahuac.mx"
+                placeholder="usuario@iest.edu.mx"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

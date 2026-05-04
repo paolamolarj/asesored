@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import ConfirmModal from "./ConfirmModal";
 import ExportarPDF from "./ExportarPDF";
+import { enviarEmailConfirmacion } from "../emailService";
 
 
 interface LoggedUser {
@@ -20,6 +21,7 @@ interface Asesoria {
   notas?: string;
   alumno_nombre: string;
   alumno_apellido: string;
+  alumno_email: string; 
 }
 
 interface AsesorSessionsListProps {
@@ -81,7 +83,24 @@ const nombreUsuario = user ? `${user.nombre} ${user.apellido}` : "Asesor";
         body: JSON.stringify({ asesoria_id: asesoriaId, asesor_id: user.id }),
       });
       const data = await response.json();
-      if (data.success) { showToast("Solicitud aceptada correctamente.", "success"); fetchAsesorias(); }
+      if (data.success) { 
+        showToast("Solicitud aceptada correctamente.", "success"); 
+         const asesoria = asesorias.find((a) => a.id === asesoriaId);
+  if (asesoria?.alumno_email) {
+    enviarEmailConfirmacion({
+      to_email: asesoria.alumno_email,
+      to_name: `${asesoria.alumno_nombre} ${asesoria.alumno_apellido}`,
+      mensaje: "Tu solicitud de asesoría fue aceptada. Te esperamos en la fecha y hora indicadas.",
+      materia: asesoria.materia,
+      fecha: new Date(asesoria.fecha + "T00:00:00").toLocaleDateString("es-MX", {
+        year: "numeric", month: "long", day: "numeric",
+      }),
+      hora: asesoria.hora.slice(0, 5),
+    });
+  }
+
+  fetchAsesorias();
+}
       else showToast(data.message || "No se pudo aceptar la solicitud.", "error");
     } catch { showToast("No se pudo conectar con el servidor.", "error"); }
     finally { setUpdatingId(null); }
@@ -113,7 +132,25 @@ const nombreUsuario = user ? `${user.nombre} ${user.apellido}` : "Asesor";
         body: JSON.stringify({ asesoria_id: asesoriaId, asesor_id: user.id }),
       });
       const data = await response.json();
-      if (data.success) { showToast("Asesoría marcada como completada.", "success"); fetchAsesorias(); }
+      if (data.success) {
+  showToast("Asesoría marcada como completada.", "success");
+
+  const asesoria = asesorias.find((a) => a.id === asesoriaId);
+  if (asesoria?.alumno_email) {
+    enviarEmailConfirmacion({
+      to_email: asesoria.alumno_email,
+      to_name: `${asesoria.alumno_nombre} ${asesoria.alumno_apellido}`,
+      mensaje: "Tu asesoría fue marcada como completada. Ya puedes calificarla desde tu dashboard.",
+      materia: asesoria.materia,
+      fecha: new Date(asesoria.fecha + "T00:00:00").toLocaleDateString("es-MX", {
+        year: "numeric", month: "long", day: "numeric",
+      }),
+      hora: asesoria.hora.slice(0, 5),
+    });
+  }
+
+  fetchAsesorias();
+}
       else showToast(data.message || "No se pudo actualizar la asesoría.", "error");
     } catch { showToast("No se pudo conectar con el servidor.", "error"); }
     finally { setUpdatingId(null); }
